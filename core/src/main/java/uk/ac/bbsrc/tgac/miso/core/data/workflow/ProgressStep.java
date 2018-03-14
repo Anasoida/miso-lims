@@ -15,6 +15,8 @@ public interface ProgressStep extends Serializable, Comparable<ProgressStep> {
 
   void setStepNumber(int stepNumber);
 
+  void accept(WorkflowStep visitor);
+
   enum InputType {
     SEQUENCERPARTITIONCONTAINER, POOL, PLATFORM, INTEGER
   }

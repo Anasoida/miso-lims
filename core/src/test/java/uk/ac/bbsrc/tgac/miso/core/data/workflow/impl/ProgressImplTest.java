@@ -10,7 +10,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.ac.bbsrc.tgac.miso.core.data.workflow.AbstractProgressStep.ProgressStepId;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.Progress;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.ProgressStep;
 
@@ -44,10 +43,10 @@ public class ProgressImplTest {
 
     progress.setSteps(Arrays.asList(step2, step1));
 
-    List<ProgressStep> steps = new ArrayList<>(progress.getSteps());
-    assertEquals(2, steps.size());
-    assertEquals(1, steps.get(0).getStepNumber());
-    assertEquals(2, steps.get(1).getStepNumber());
+    List<ProgressStep> actualSteps = new ArrayList<>(progress.getSteps());
+    assertEquals(2, actualSteps.size());
+    assertEquals(1, actualSteps.get(0).getStepNumber());
+    assertEquals(2, actualSteps.get(1).getStepNumber());
   }
 
   private PoolProgressStep makePoolProgressStep(int stepNumber) {

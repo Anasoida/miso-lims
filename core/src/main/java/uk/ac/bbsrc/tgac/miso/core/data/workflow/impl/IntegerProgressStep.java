@@ -1,29 +1,23 @@
 package uk.ac.bbsrc.tgac.miso.core.data.workflow.impl;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import uk.ac.bbsrc.tgac.miso.core.data.Sample;
-import uk.ac.bbsrc.tgac.miso.core.data.impl.SampleImpl;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.AbstractProgressStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStep;
 
 @Entity
-@Table(name = "StepSample")
-public class SampleProgressStep extends AbstractProgressStep {
+@Table(name = "StepPool")
+public class IntegerProgressStep extends AbstractProgressStep {
   private static final long serialVersionUID = 1L;
 
-  @ManyToOne(targetEntity = SampleImpl.class)
-  @JoinColumn(name = "sampleId")
-  private Sample input;
+  private int input;
 
-  public Sample getInput() {
+  public int getInput() {
     return input;
   }
 
-  public void setInput(Sample input) {
+  public void setInput(int input) {
     this.input = input;
   }
 
@@ -31,7 +25,7 @@ public class SampleProgressStep extends AbstractProgressStep {
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();
-    result = prime * result + ((input == null) ? 0 : input.hashCode());
+    result = prime * result + input;
     return result;
   }
 
@@ -40,10 +34,8 @@ public class SampleProgressStep extends AbstractProgressStep {
     if (this == obj) return true;
     if (!super.equals(obj)) return false;
     if (getClass() != obj.getClass()) return false;
-    SampleProgressStep other = (SampleProgressStep) obj;
-    if (input == null) {
-      if (other.input != null) return false;
-    } else if (!input.equals(other.input)) return false;
+    IntegerProgressStep other = (IntegerProgressStep) obj;
+    if (input != other.input) return false;
     return true;
   }
 
@@ -51,4 +43,5 @@ public class SampleProgressStep extends AbstractProgressStep {
   public void accept(WorkflowStep visitor) {
     visitor.processInput(this);
   }
+  // todo
 }
