@@ -6,7 +6,8 @@ import uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStepPrompt;
 
 public class IntegerWorkflow implements Workflow {
-  IntegerWorkflowStep workflowStep = new IntegerWorkflowStep("Input an integer");
+  private IntegerWorkflowStep workflowStep = new IntegerWorkflowStep("Input an integer");
+  private Progress progress;
 
   @Override
   public WorkflowStepPrompt getNextStep() {
@@ -30,12 +31,11 @@ public class IntegerWorkflow implements Workflow {
 
   @Override
   public Progress getProgress() {
-    // todo
-    return null;
+    return progress;
   }
 
   @Override
   public void setProgress(Progress progress) {
-    // todo
+    this.progress = progress;
   }
 }
