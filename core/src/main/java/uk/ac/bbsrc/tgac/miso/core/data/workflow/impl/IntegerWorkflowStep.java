@@ -7,7 +7,7 @@ import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStepPrompt;
 
 public class IntegerWorkflowStep implements WorkflowStep {
-  private String message;
+  private final String message;
 
   public IntegerWorkflowStep(String message) {
     this.message = message;
@@ -24,6 +24,7 @@ public class IntegerWorkflowStep implements WorkflowStep {
 
   @Override
   public String getLogMessage() {
+    // todo
     return null;
   }
 }
