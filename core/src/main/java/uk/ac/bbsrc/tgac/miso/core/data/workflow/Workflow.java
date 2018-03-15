@@ -7,9 +7,11 @@ public interface Workflow {
 
   WorkflowStepPrompt getNextStep();
 
-  WorkflowStepPrompt getStep(int step);
+  WorkflowStepPrompt getStep(int stepNumber);
 
   void processInput(ProgressStep step);
+
+  void processInput(int stepNumber, ProgressStep step);
 
   /**
    * Remove the last ProgressStep

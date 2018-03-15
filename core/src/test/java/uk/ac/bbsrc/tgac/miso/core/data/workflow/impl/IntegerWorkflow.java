@@ -15,7 +15,7 @@ public class IntegerWorkflow implements Workflow {
   private WorkflowStepPrompt endPrompt = new WorkflowStepPrompt(Collections.emptySet(), "Workflow is complete.");
   private Progress progress;
 
-  public IntegerWorkflow(User user) {
+  IntegerWorkflow(User user) {
     this.progress = new ProgressImpl();
     progress.setWorkflowName(null);
     progress.setUser(user);
@@ -24,20 +24,27 @@ public class IntegerWorkflow implements Workflow {
 
   @Override
   public WorkflowStepPrompt getNextStep() {
-    if (progress.getSteps().size() == 0) return firstStep.getPrompt();
+    if (nextStepNumber() == 1) return firstStep.getPrompt();
 
     return endPrompt;
   }
 
   @Override
-  public WorkflowStepPrompt getStep(int step) {
-    if (step == 1) return firstStep.getPrompt();
+  public WorkflowStepPrompt getStep(int stepNumber) {
+    if (stepNumber == 1) return firstStep.getPrompt();
 
-    throw new IllegalArgumentException(String.format("Invalid step number: %d", step));
+    throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
   }
 
   @Override
   public void processInput(ProgressStep step) {
+    processInput(nextStepNumber(), step);
+  }
+
+  @Override
+  public void processInput(int stepNumber, ProgressStep step) {
+    if (stepNumber != 1) throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
+
     assignProgress(step);
     assignStepNumber(step);
     step.accept(firstStep);
@@ -45,9 +52,13 @@ public class IntegerWorkflow implements Workflow {
     progress.getSteps().add(step);
   }
 
+  private int nextStepNumber() {
+    return progress.getSteps().size() + 1;
+  }
+
   private void assignStepNumber(ProgressStep step) {
     // Step numbers begin at 1
-    step.setStepNumber(progress.getSteps().size() + 1);
+    step.setStepNumber(nextStepNumber());
   }
 
   private void assignProgress(ProgressStep step) {

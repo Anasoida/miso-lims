@@ -83,24 +83,16 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testProcessValidInput() {
-    IntegerProgressStep step = new IntegerProgressStep();
-    step.setInput(INPUT);
+    IntegerProgressStep step = makeIntegerProgressStep(INPUT);
 
     workflow.processInput(step);
 
-    List<ProgressStep> steps = new ArrayList<>(workflow.getProgress().getSteps());
-    assertEquals(1, steps.size());
-
-    IntegerProgressStep actualStep = (IntegerProgressStep) steps.get(0);
-    assertEquals(INPUT, actualStep.getInput());
-    assertEquals(1, actualStep.getStepNumber());
-    assertEquals(workflow.getProgress(), actualStep.getProgress());
+    assertValidProgress(workflow.getProgress(), INPUT);
   }
 
   @Test
   public void testProcessInputThenCancelInput() {
-    IntegerProgressStep step = new IntegerProgressStep();
-    step.setInput(1);
+    IntegerProgressStep step = makeIntegerProgressStep(INPUT);
 
     workflow.processInput(step);
     workflow.cancelInput();
@@ -112,6 +104,59 @@ public class IntegerWorkflowTest {
   public void testGetNextStepAfterProcessInput() {
     workflow.processInput(new IntegerProgressStep());
     assertEndPrompt(workflow.getNextStep());
+  }
+
+  @Test
+  public void testGetStepAfterProcessInput() {
+    workflow.processInput(new IntegerProgressStep());
+    exception.expect(IllegalArgumentException.class);
+    workflow.getStep(2);
+  }
+
+  @Test
+  public void testProcessInputAtStepZero() {
+    exception.expect(IllegalArgumentException.class);
+    workflow.processInput(0, new IntegerProgressStep());
+  }
+
+  @Test
+  public void testProcessInputAtStepAfterCurrentStep() {
+    exception.expect(IllegalArgumentException.class);
+    workflow.processInput(2, new IntegerProgressStep());
+  }
+
+  @Test
+  public void testProcessInvalidInputAtFirstStep() {
+    exception.expect(IllegalArgumentException.class);
+    workflow.processInput(1, new PoolProgressStep());
+  }
+
+  @Test
+  public void testProcessValidInputAtFirstStep() {
+    IntegerProgressStep step = makeIntegerProgressStep(INPUT);
+
+    workflow.processInput(1, step);
+
+    assertValidProgress(workflow.getProgress(), INPUT);
+  }
+
+  /**
+   * Validate that {@code progress} contains 1 step with {@code input} as its input
+   */
+  private void assertValidProgress(Progress progress, int input) {
+    List<ProgressStep> steps = new ArrayList<>(progress.getSteps());
+    assertEquals(1, steps.size());
+
+    IntegerProgressStep actualStep = (IntegerProgressStep) steps.get(0);
+    assertEquals(input, actualStep.getInput());
+    assertEquals(workflow.getProgress(), actualStep.getProgress());
+    assertEquals(1, actualStep.getStepNumber());
+  }
+
+  private IntegerProgressStep makeIntegerProgressStep(int input) {
+    IntegerProgressStep step = new IntegerProgressStep();
+    step.setInput(input);
+    return step;
   }
 
   private void assertEndPrompt(WorkflowStepPrompt prompt) {
