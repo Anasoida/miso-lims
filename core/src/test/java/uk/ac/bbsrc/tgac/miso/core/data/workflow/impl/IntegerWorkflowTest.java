@@ -83,11 +83,9 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testProcessValidInput() {
-    IntegerProgressStep step = makeIntegerProgressStep(INPUT);
+    workflow.processInput(makeIntegerProgressStep(INPUT));
 
-    workflow.processInput(step);
-
-    assertValidProgress(workflow.getProgress(), INPUT);
+    validateProgress(workflow.getProgress(), INPUT);
   }
 
   @Test
@@ -137,13 +135,32 @@ public class IntegerWorkflowTest {
 
     workflow.processInput(1, step);
 
-    assertValidProgress(workflow.getProgress(), INPUT);
+    validateProgress(workflow.getProgress(), INPUT);
+  }
+
+  @Test
+  public void testSetEmptyProgressWithoutInput() {
+    workflow.setProgress(makeEmptyProgress());
+    assertEquivalent(makeEmptyProgress(), workflow.getProgress());
+  }
+
+  @Test
+  public void testSetEmptyProgressAfterInput() {
+    workflow.processInput(makeIntegerProgressStep(INPUT));
+    workflow.setProgress(makeEmptyProgress());
+    assertEquivalent(makeEmptyProgress(), workflow.getProgress());
+  }
+
+  @Test
+  public void testSetProgressWithInput() {
+    workflow.setProgress(makeProgressWithInput(INPUT));
+    assertEquivalent(makeProgressWithInput(INPUT), workflow.getProgress());
   }
 
   /**
    * Validate that {@code progress} contains 1 step with {@code input} as its input
    */
-  private void assertValidProgress(Progress progress, int input) {
+  private void validateProgress(Progress progress, int input) {
     List<ProgressStep> steps = new ArrayList<>(progress.getSteps());
     assertEquals(1, steps.size());
 
@@ -179,10 +196,18 @@ public class IntegerWorkflowTest {
   }
 
   private Progress makeEmptyProgress() {
-    Progress expectedProgress = new ProgressImpl();
-    expectedProgress.setSteps(Collections.emptyList());
-    expectedProgress.setUser(makeUser());
-    expectedProgress.setWorkflowName(null);
-    return expectedProgress;
+    Progress progress = new ProgressImpl();
+    progress.setSteps(Collections.emptyList());
+    progress.setUser(makeUser());
+    progress.setWorkflowName(null);
+    return progress;
+  }
+
+  private Progress makeProgressWithInput(int input) {
+    Progress progress = new ProgressImpl();
+    progress.setSteps(Collections.singleton(makeIntegerProgressStep(input)));
+    progress.setUser(makeUser());
+    progress.setWorkflowName(null);
+    return progress;
   }
 }
