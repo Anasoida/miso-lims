@@ -1,6 +1,8 @@
 package uk.ac.bbsrc.tgac.miso.core.data.workflow.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import com.eaglegenomics.simlims.core.User;
 
@@ -43,11 +45,20 @@ public class IntegerWorkflow implements Workflow {
   public void processInput(int stepNumber, ProgressStep step) {
     if (stepNumber != 1) throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
 
+    clearStepsAfter(stepNumber);
+
     assignProgress(step);
     assignStepNumber(step);
     step.accept(firstStep);
 
     progress.getSteps().add(step);
+  }
+
+  private void clearStepsAfter(int stepNumber) {
+    List<ProgressStep> steps = new ArrayList<>(progress.getSteps());
+    steps.subList(stepNumber - 1, steps.size()).clear();
+
+    progress.setSteps(steps);
   }
 
   @Override
