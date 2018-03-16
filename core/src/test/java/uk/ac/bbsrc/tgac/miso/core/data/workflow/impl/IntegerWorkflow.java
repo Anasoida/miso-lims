@@ -24,9 +24,7 @@ public class IntegerWorkflow implements Workflow {
 
   @Override
   public WorkflowStepPrompt getNextStep() {
-    if (nextStepNumber() == 1) return firstStep.getPrompt();
-
-    return endPrompt;
+    return (nextStepNumber() == 1) ? firstStep.getPrompt() : null;
   }
 
   @Override
@@ -52,19 +50,6 @@ public class IntegerWorkflow implements Workflow {
     progress.getSteps().add(step);
   }
 
-  private int nextStepNumber() {
-    return progress.getSteps().size() + 1;
-  }
-
-  private void assignStepNumber(ProgressStep step) {
-    // Step numbers begin at 1
-    step.setStepNumber(nextStepNumber());
-  }
-
-  private void assignProgress(ProgressStep step) {
-    step.setProgress(progress);
-  }
-
   @Override
   public void cancelInput() {
     progress.setSteps(Collections.emptyList());
@@ -79,4 +64,18 @@ public class IntegerWorkflow implements Workflow {
   public void setProgress(Progress progress) {
     this.progress = progress;
   }
+
+  private int nextStepNumber() {
+    return progress.getSteps().size() + 1;
+  }
+
+  private void assignStepNumber(ProgressStep step) {
+    // Step numbers begin at 1
+    step.setStepNumber(nextStepNumber());
+  }
+
+  private void assignProgress(ProgressStep step) {
+    step.setProgress(progress);
+  }
+
 }

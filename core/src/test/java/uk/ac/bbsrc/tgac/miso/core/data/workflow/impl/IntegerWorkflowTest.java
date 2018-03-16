@@ -1,6 +1,7 @@
 package uk.ac.bbsrc.tgac.miso.core.data.workflow.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,9 +100,9 @@ public class IntegerWorkflowTest {
   }
 
   @Test
-  public void testGetNextStepAfterProcessInput() {
+  public void testGetNextStepAfterProcessInputReturnsNull() {
     workflow.processInput(new IntegerProgressStep());
-    assertEndPrompt(workflow.getNextStep());
+    assertNull(workflow.getNextStep());
   }
 
   @Test
@@ -174,11 +175,6 @@ public class IntegerWorkflowTest {
     IntegerProgressStep step = new IntegerProgressStep();
     step.setInput(input);
     return step;
-  }
-
-  private void assertEndPrompt(WorkflowStepPrompt prompt) {
-    assertEquals(Collections.emptySet(), prompt.getDataTypes());
-    assertEquals("Workflow is complete.", prompt.getMessage());
   }
 
   private void assertIntegerPrompt(WorkflowStepPrompt prompt) {
