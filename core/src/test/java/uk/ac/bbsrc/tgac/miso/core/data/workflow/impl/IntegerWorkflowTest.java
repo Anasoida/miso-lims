@@ -113,6 +113,14 @@ public class IntegerWorkflowTest {
   }
 
   @Test
+  public void testProcessInputAfterComplete() {
+    workflow.processInput(new IntegerProgressStep());
+
+    exception.expect(IllegalArgumentException.class);
+    workflow.processInput(new IntegerProgressStep());
+  }
+
+  @Test
   public void testProcessInputAtStepZero() {
     exception.expect(IllegalArgumentException.class);
     workflow.processInput(0, new IntegerProgressStep());
@@ -137,6 +145,13 @@ public class IntegerWorkflowTest {
     workflow.processInput(1, step);
 
     validateProgress(workflow.getProgress(), INPUT);
+  }
+
+  @Test
+  public void testProcessInputAtSecondStepAfterProcessInput() {
+    workflow.processInput(makeIntegerProgressStep(INPUT));
+    exception.expect(IllegalArgumentException.class);
+    workflow.processInput(2, makeIntegerProgressStep(INPUT));
   }
 
   @Test
