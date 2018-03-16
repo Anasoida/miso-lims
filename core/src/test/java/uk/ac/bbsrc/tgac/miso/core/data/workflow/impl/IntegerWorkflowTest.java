@@ -5,12 +5,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -40,7 +38,8 @@ public class IntegerWorkflowTest {
 
   @Before
   public void setUp() {
-    workflow = new IntegerWorkflow(makeUser(USER_ID));
+    workflow = new IntegerWorkflow();
+    workflow.setProgress(makeProgress());
   }
 
   @Test
@@ -51,7 +50,7 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testGetProgressWithoutInput() {
-    assertEquivalent2(makeEmptyProgress(), workflow.getProgress());
+    assertEquivalent(makeProgress(), workflow.getProgress());
   }
 
   @Test
@@ -86,8 +85,7 @@ public class IntegerWorkflowTest {
   public void testProcessValidInput() {
     workflow.processInput(makeIntegerProgressStep(INPUT_1));
 
-    validateProgress(workflow.getProgress(), INPUT_1);
-//    assertEquivalent2(makeProgress(INPUT_1), workflow.getProgress());
+    assertEquivalent(makeProgress(INPUT_1), workflow.getProgress());
   }
 
   @Test
@@ -97,40 +95,40 @@ public class IntegerWorkflowTest {
     workflow.processInput(step);
     workflow.cancelInput();
 
-    assertEquivalent(makeEmptyProgress(), workflow.getProgress());
+    assertEquivalent(makeProgress(), workflow.getProgress());
   }
 
   @Test
   public void testGetNextStepAfterProcessInputReturnsNull() {
-    workflow.processInput(new IntegerProgressStep());
+    workflow.processInput(makeIntegerProgressStep(INPUT_1));
     assertNull(workflow.getNextStep());
   }
 
   @Test
   public void testGetStepAfterProcessInput() {
-    workflow.processInput(new IntegerProgressStep());
+    workflow.processInput(makeIntegerProgressStep(INPUT_1));
     exception.expect(IllegalArgumentException.class);
     workflow.getStep(2);
   }
 
   @Test
   public void testProcessInputAfterComplete() {
-    workflow.processInput(new IntegerProgressStep());
+    workflow.processInput(makeIntegerProgressStep(INPUT_1));
 
     exception.expect(IllegalArgumentException.class);
-    workflow.processInput(new IntegerProgressStep());
+    workflow.processInput(makeIntegerProgressStep(INPUT_1));
   }
 
   @Test
   public void testProcessInputAtStepZero() {
     exception.expect(IllegalArgumentException.class);
-    workflow.processInput(0, new IntegerProgressStep());
+    workflow.processInput(0, makeIntegerProgressStep(INPUT_1));
   }
 
   @Test
   public void testProcessInputAtStepAfterCurrentStep() {
     exception.expect(IllegalArgumentException.class);
-    workflow.processInput(2, new IntegerProgressStep());
+    workflow.processInput(2, makeIntegerProgressStep(INPUT_1));
   }
 
   @Test
@@ -141,11 +139,9 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testProcessValidInputAtFirstStep() {
-    IntegerProgressStep step = makeIntegerProgressStep(INPUT_1);
+    workflow.processInput(1, makeIntegerProgressStep(INPUT_1));
 
-    workflow.processInput(1, step);
-
-    validateProgress(workflow.getProgress(), INPUT_1);
+    assertEquivalent(makeProgress(INPUT_1), workflow.getProgress());
   }
 
   @Test
@@ -156,43 +152,30 @@ public class IntegerWorkflowTest {
   }
 
   @Test
-  @Ignore
   public void testReprocessInputAtFirstStep() {
     workflow.processInput(makeIntegerProgressStep(INPUT_1));
     workflow.processInput(1, makeIntegerProgressStep(INPUT_2));
-    assertEquivalent(makeProgressWithInput(INPUT_2), workflow.getProgress());
+
+    assertEquivalent(makeProgress(INPUT_2), workflow.getProgress());
   }
 
   @Test
   public void testSetEmptyProgressWithoutInput() {
-    workflow.setProgress(makeEmptyProgress());
-    assertEquivalent(makeEmptyProgress(), workflow.getProgress());
+    workflow.setProgress(makeProgress());
+    assertEquivalent(makeProgress(), workflow.getProgress());
   }
 
   @Test
   public void testSetEmptyProgressAfterInput() {
     workflow.processInput(makeIntegerProgressStep(INPUT_1));
-    workflow.setProgress(makeEmptyProgress());
-    assertEquivalent(makeEmptyProgress(), workflow.getProgress());
+    workflow.setProgress(makeProgress());
+    assertEquivalent(makeProgress(), workflow.getProgress());
   }
 
   @Test
   public void testSetProgressWithInput() {
-    workflow.setProgress(makeProgressWithInput(INPUT_1));
-    assertEquivalent(makeProgressWithInput(INPUT_1), workflow.getProgress());
-  }
-
-  /**
-   * Validate that {@code progress} contains 1 step with {@code input} as its input
-   */
-  private void validateProgress(Progress progress, int input) {
-    List<ProgressStep> steps = new ArrayList<>(progress.getSteps());
-    assertEquals(1, steps.size());
-
-    IntegerProgressStep actualStep = (IntegerProgressStep) steps.get(0);
-    assertEquals(input, actualStep.getInput());
-    assertEquals(workflow.getProgress(), actualStep.getProgress());
-    assertEquals(1, actualStep.getStepNumber());
+    workflow.setProgress(makeProgress(INPUT_1));
+    assertEquivalent(makeProgress(INPUT_1), workflow.getProgress());
   }
 
   private IntegerProgressStep makeIntegerProgressStep(int input) {
@@ -209,25 +192,13 @@ public class IntegerWorkflowTest {
   /**
    * Assert that actualProgress and expectedProgress match based on a subset of fields
    */
-  private void assertEquivalent2(Progress expectedProgress, Progress actualProgress) {
-    //    assertEquals(expectedProgress.getId(), actualProgress.getId());
-    assertEquals(expectedProgress.getWorkflowName(), actualProgress.getWorkflowName());
-    assertEquals(expectedProgress.getUser(), actualProgress.getUser());
-    assertEquals(expectedProgress.getSteps(), actualProgress.getSteps());
-    //    assertSimilarDates(expectedProgress.getCreationTime(), actualProgress.getCreationTime());
-    //    assertSimilarDates(expectedProgress.getLastModified(), actualProgress.getLastModified());
-  }
-
-  /**
-   * Assert that actualProgress and expectedProgress match based on a subset of fields
-   */
   private void assertEquivalent(Progress expectedProgress, Progress actualProgress) {
-//    assertEquals(expectedProgress.getId(), actualProgress.getId());
+    assertEquals(expectedProgress.getId(), actualProgress.getId());
     assertEquals(expectedProgress.getWorkflowName(), actualProgress.getWorkflowName());
     assertEquals(expectedProgress.getUser(), actualProgress.getUser());
     assertEquals(expectedProgress.getSteps(), actualProgress.getSteps());
-//    assertSimilarDates(expectedProgress.getCreationTime(), actualProgress.getCreationTime());
-//    assertSimilarDates(expectedProgress.getLastModified(), actualProgress.getLastModified());
+    assertSimilarDates(expectedProgress.getCreationTime(), actualProgress.getCreationTime());
+    assertSimilarDates(expectedProgress.getLastModified(), actualProgress.getLastModified());
   }
 
   /**
@@ -240,40 +211,31 @@ public class IntegerWorkflowTest {
   }
 
   private Progress makeProgress(int... inputs) {
+    return makeProgress(PROGRESS_ID, WORKFLOW_NAME, makeUser(USER_ID), inputs);
+  }
+
+  private Progress makeProgress(long id, WorkflowName workflowName, User user, int... inputs) {
     Progress progress = new ProgressImpl();
 
-    progress.setId(PROGRESS_ID);
-    progress.setWorkflowName(WORKFLOW_NAME);
-    progress.setUser(makeUser(USER_ID));
+    progress.setId(id);
+    progress.setWorkflowName(workflowName);
+    progress.setUser(user);
 
     Date now = new Date();
     progress.setCreationTime(now);
     progress.setLastModified(now);
 
     List<ProgressStep> steps = new ArrayList<>();
-    for (int i = 0; i < inputs.length; ++i) {
-      ProgressStep step = makeIntegerProgressStep(inputs[i]);
-      step.setStepNumber(i + 1);
-      steps.add(step);
+    if (inputs != null) {
+      for (int i = 0; i < inputs.length; ++i) {
+        ProgressStep step = makeIntegerProgressStep(inputs[i]);
+        step.setStepNumber(i + 1);
+        step.setProgress(progress);
+        steps.add(step);
+      }
     }
     progress.setSteps(steps);
 
-    return progress;
-  }
-
-  private Progress makeEmptyProgress() {
-    Progress progress = new ProgressImpl();
-    progress.setSteps(Collections.emptyList());
-    progress.setUser(makeUser(USER_ID));
-    progress.setWorkflowName(WORKFLOW_NAME);
-    return progress;
-  }
-
-  private Progress makeProgressWithInput(int input) {
-    Progress progress = new ProgressImpl();
-    progress.setSteps(Collections.singleton(makeIntegerProgressStep(input)));
-    progress.setUser(makeUser(USER_ID));
-    progress.setWorkflowName(WORKFLOW_NAME);
     return progress;
   }
 

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.eaglegenomics.simlims.core.User;
-
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.Progress;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.ProgressStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow;
@@ -16,13 +14,6 @@ public class IntegerWorkflow implements Workflow {
   private WorkflowStep firstStep = new IntegerWorkflowStep("Input an integer.");
   private WorkflowStepPrompt endPrompt = new WorkflowStepPrompt(Collections.emptySet(), "Workflow is complete.");
   private Progress progress;
-
-  IntegerWorkflow(User user) {
-    this.progress = new ProgressImpl();
-    progress.setWorkflowName(null);
-    progress.setUser(user);
-    progress.setSteps(Collections.emptyList());
-  }
 
   @Override
   public WorkflowStepPrompt getNextStep() {
