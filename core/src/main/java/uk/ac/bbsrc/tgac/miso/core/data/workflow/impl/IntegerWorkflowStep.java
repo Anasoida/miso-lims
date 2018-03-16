@@ -24,7 +24,6 @@ public class IntegerWorkflowStep implements WorkflowStep {
 
   @Override
   public String getLogMessage() {
-    // todo
     return null;
   }
 }

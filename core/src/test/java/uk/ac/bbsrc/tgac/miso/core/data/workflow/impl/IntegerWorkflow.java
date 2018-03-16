@@ -11,18 +11,17 @@ import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStepPrompt;
 
 public class IntegerWorkflow implements Workflow {
-  private WorkflowStep firstStep = new IntegerWorkflowStep("Input an integer.");
-  private WorkflowStepPrompt endPrompt = new WorkflowStepPrompt(Collections.emptySet(), "Workflow is complete.");
+  private WorkflowStep workflowStep = new IntegerWorkflowStep("Input an integer.");
   private Progress progress;
 
   @Override
   public WorkflowStepPrompt getNextStep() {
-    return (nextStepNumber() == 1) ? firstStep.getPrompt() : null;
+    return (nextStepNumber() == 1) ? workflowStep.getPrompt() : null;
   }
 
   @Override
   public WorkflowStepPrompt getStep(int stepNumber) {
-    if (stepNumber == 1) return firstStep.getPrompt();
+    if (stepNumber == 1) return workflowStep.getPrompt();
 
     throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
   }
@@ -40,7 +39,7 @@ public class IntegerWorkflow implements Workflow {
 
     assignProgress(step);
     assignStepNumber(step);
-    step.accept(firstStep);
+    step.accept(workflowStep);
 
     progress.getSteps().add(step);
   }
@@ -79,5 +78,4 @@ public class IntegerWorkflow implements Workflow {
   private void assignProgress(ProgressStep step) {
     step.setProgress(progress);
   }
-
 }
