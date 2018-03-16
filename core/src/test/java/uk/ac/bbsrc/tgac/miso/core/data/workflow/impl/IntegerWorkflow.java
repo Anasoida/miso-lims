@@ -11,6 +11,7 @@ import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStepPrompt;
 
 public class IntegerWorkflow implements Workflow {
+  private static final Workflow.WorkflowName WORKFLOW_NAME = null;
   private WorkflowStep workflowStep = new IntegerWorkflowStep("Input an integer.");
   private Progress progress;
 
@@ -63,7 +64,35 @@ public class IntegerWorkflow implements Workflow {
 
   @Override
   public void setProgress(Progress progress) {
-    this.progress = progress;
+    validateProgress(progress);
+
+    this.progress = new ProgressImpl();
+    this.progress.setId(progress.getId());
+    this.progress.setUser(progress.getUser());
+    this.progress.setCreationTime(progress.getCreationTime());
+    this.progress.setLastModified(progress.getLastModified());
+    this.progress.setSteps(Collections.emptyList());
+    this.progress.setWorkflowName(progress.getWorkflowName());
+
+    processInputs(new ArrayList<>(progress.getSteps()));
+  }
+
+  private void processInputs(List<ProgressStep> steps) {
+    for (ProgressStep step : steps) {
+      processInput(step);
+    }
+  }
+
+  /**
+   * Validate all Progress fields, but not ProgressSteps
+   */
+  private void validateProgress(Progress progress) {
+    if (progress.getWorkflowName() != WORKFLOW_NAME) {
+      throw new IllegalArgumentException(
+          String.format("WorkflowName %s is not expected for Workflow %s", progress.getWorkflowName(), IntegerWorkflow.class.toString()));
+    } else if (progress.getCreationTime().after(progress.getLastModified())) {
+      throw new IllegalArgumentException("Progress creation time is after last modification time");
+    }
   }
 
   private int nextStepNumber() {

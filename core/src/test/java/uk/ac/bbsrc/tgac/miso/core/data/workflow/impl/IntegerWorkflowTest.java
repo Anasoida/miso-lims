@@ -3,8 +3,10 @@ package uk.ac.bbsrc.tgac.miso.core.data.workflow.impl;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow.WorkflowName.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class IntegerWorkflowTest {
   private static final long USER_ID = 2;
   private static final int INPUT_1 = 3;
   private static final int INPUT_2 = 4;
+  // Use null for WorkflowName since we can't create an Enum value for a test workflow
   private static final WorkflowName WORKFLOW_NAME = null;
 
   @Rule
@@ -176,6 +179,36 @@ public class IntegerWorkflowTest {
   public void testSetProgressWithInput() {
     workflow.setProgress(makeProgress(INPUT_1));
     assertEquivalent(makeProgress(INPUT_1), workflow.getProgress());
+  }
+
+  @Test
+  public void testSetProgressWithInvalidName() {
+    Progress progress = makeProgress();
+    progress.setWorkflowName(LOADSEQUENCER);
+
+    exception.expect(IllegalArgumentException.class);
+    workflow.setProgress(progress);
+  }
+
+  @Test
+  public void testSetProgressWithInvalidDates() {
+    Progress progress = makeProgress();
+    progress.setCreationTime(new Date(1));
+    progress.setLastModified(new Date(0));
+
+    exception.expect(IllegalArgumentException.class);
+    workflow.setProgress(progress);
+  }
+
+  @Test
+  public void testSetInvalidProgress() {
+    Progress progress = makeProgress();
+
+    progress.setSteps(Collections.emptyList());
+    progress.getSteps().add(new PoolProgressStep());
+
+    exception.expect(IllegalArgumentException.class);
+    workflow.setProgress(progress);
   }
 
   private IntegerProgressStep makeIntegerProgressStep(int input) {
