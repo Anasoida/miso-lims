@@ -222,9 +222,6 @@ public class IntegerWorkflowTest {
     assertEquals("Input an integer.", prompt.getMessage());
   }
 
-  /**
-   * Assert that actualProgress and expectedProgress match based on a subset of fields
-   */
   private void assertEquivalent(Progress expectedProgress, Progress actualProgress) {
     assertEquals(expectedProgress.getId(), actualProgress.getId());
     assertEquals(expectedProgress.getWorkflowName(), actualProgress.getWorkflowName());

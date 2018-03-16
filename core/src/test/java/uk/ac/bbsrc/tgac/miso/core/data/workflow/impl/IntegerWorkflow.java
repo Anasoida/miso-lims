@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import uk.ac.bbsrc.tgac.miso.core.data.workflow.AbstractWorkflow;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.Progress;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.ProgressStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStepPrompt;
 
-public class IntegerWorkflow implements Workflow {
+//public class IntegerWorkflow implements Workflow {
+public class IntegerWorkflow extends AbstractWorkflow {
   private static final Workflow.WorkflowName WORKFLOW_NAME = null;
   private WorkflowStep workflowStep = new IntegerWorkflowStep("Input an integer.");
-  private Progress progress;
+//  private Progress progress;
 
   @Override
   public WorkflowStepPrompt getNextStep() {
@@ -42,61 +44,61 @@ public class IntegerWorkflow implements Workflow {
     assignStepNumber(step);
     step.accept(workflowStep);
 
-    progress.getSteps().add(step);
+    getProgress().getSteps().add(step);
   }
 
   private void clearStepsAfter(int stepNumber) {
-    List<ProgressStep> steps = new ArrayList<>(progress.getSteps());
+    List<ProgressStep> steps = new ArrayList<>(getProgress().getSteps());
     steps.subList(stepNumber - 1, steps.size()).clear();
 
-    progress.setSteps(steps);
+    getProgress().setSteps(steps);
   }
 
   @Override
   public void cancelInput() {
-    progress.setSteps(Collections.emptyList());
+    getProgress().setSteps(Collections.emptyList());
   }
 
   @Override
-  public Progress getProgress() {
-    return progress;
+  protected WorkflowName getWorkflowName() {
+    return WORKFLOW_NAME;
   }
 
-  @Override
-  public void setProgress(Progress progress) {
-    validateProgress(progress);
-
-    this.progress = new ProgressImpl();
-    this.progress.setId(progress.getId());
-    this.progress.setUser(progress.getUser());
-    this.progress.setCreationTime(progress.getCreationTime());
-    this.progress.setLastModified(progress.getLastModified());
-    this.progress.setSteps(Collections.emptyList());
-    this.progress.setWorkflowName(progress.getWorkflowName());
-
-    processInputs(new ArrayList<>(progress.getSteps()));
-  }
-
-  private void processInputs(List<ProgressStep> steps) {
-    for (ProgressStep step : steps) {
-      processInput(step);
-    }
-  }
-
-  /**
-   * Validate all Progress fields, but not ProgressSteps
-   */
-  private void validateProgress(Progress progress) {
-    if (progress.getWorkflowName() != WORKFLOW_NAME) {
-      throw new IllegalArgumentException(
-          String.format("WorkflowName %s is not expected for Workflow %s", progress.getWorkflowName(), IntegerWorkflow.class.toString()));
-    } else if (progress.getCreationTime().after(progress.getLastModified())) {
-      throw new IllegalArgumentException("Progress creation time is after last modification time");
-    }
-  }
+//  @Override
+//  public void setProgress(Progress progress) {
+//    validateProgress(progress);
+//
+//    this.progress = new ProgressImpl();
+//    this.progress.setId(progress.getId());
+//    this.progress.setUser(progress.getUser());
+//    this.progress.setCreationTime(progress.getCreationTime());
+//    this.progress.setLastModified(progress.getLastModified());
+//    this.progress.setSteps(Collections.emptyList());
+//    this.progress.setWorkflowName(progress.getWorkflowName());
+//
+//    processInputs(new ArrayList<>(progress.getSteps()));
+//  }
+//
+//  private void processInputs(List<ProgressStep> steps) {
+//    for (ProgressStep step : steps) {
+//      processInput(step);
+//    }
+//  }
+//
+//  /**
+//   * Validate all Progress fields, but not ProgressSteps
+//   */
+//  private void validateProgress(Progress progress) {
+//    if (progress.getWorkflowName() != WORKFLOW_NAME) {
+//      throw new IllegalArgumentException(
+//          String.format("WorkflowName %s is not expected for Workflow %s", progress.getWorkflowName(), IntegerWorkflow.class.toString()));
+//    } else if (progress.getCreationTime().after(progress.getLastModified())) {
+//      throw new IllegalArgumentException("Progress creation time is after last modification time");
+//    }
+//  }
 
   private int nextStepNumber() {
-    return progress.getSteps().size() + 1;
+    return getProgress().getSteps().size() + 1;
   }
 
   private void assignStepNumber(ProgressStep step) {
@@ -105,6 +107,6 @@ public class IntegerWorkflow implements Workflow {
   }
 
   private void assignProgress(ProgressStep step) {
-    step.setProgress(progress);
+    step.setProgress(getProgress());
   }
 }
