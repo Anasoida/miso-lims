@@ -38,11 +38,29 @@ public abstract class AbstractWorkflow implements Workflow {
     processInput(nextStepNumber(), step);
   }
 
-  protected abstract boolean isComplete(Progress progress);
-
   @Override
   public boolean isComplete() {
     return isComplete(progress);
+  }
+
+  @Override
+  public void cancelInput() {
+    getProgress().setSteps(Collections.emptyList());
+  }
+
+  @Override
+  public WorkflowStepPrompt getNextStep() {
+    return getStep(nextStepNumber());
+  }
+
+  @Override
+  public WorkflowStepPrompt getStep(int stepNumber) {
+    return getStep(stepNumber, progress);
+  }
+
+  @Override
+  public void processInput(int stepNumber, ProgressStep step) {
+    progress = processInput(stepNumber, step, progress);
   }
 
   protected void clearStepsAfter(int stepNumber) {
@@ -52,27 +70,8 @@ public abstract class AbstractWorkflow implements Workflow {
     getProgress().setSteps(steps);
   }
 
-  @Override
-  public void cancelInput() {
-    getProgress().setSteps(Collections.emptyList());
-  }
-
   protected boolean isExistingStepNumber(int stepNumber) {
     return 1 <= stepNumber && stepNumber <= currentStepNumber();
-  }
-
-  @Override
-  public WorkflowStepPrompt getNextStep() {
-    return getStep(nextStepNumber());
-  }
-
-  protected abstract WorkflowName getWorkflowName();
-
-  protected abstract WorkflowStepPrompt getStep(int stepNumber, Progress progress);
-
-  @Override
-  public WorkflowStepPrompt getStep(int stepNumber) {
-    return getStep(stepNumber, progress);
   }
 
   private void processInputs(List<ProgressStep> steps) {
@@ -100,4 +99,12 @@ public abstract class AbstractWorkflow implements Workflow {
   protected int nextStepNumber() {
     return getProgress().getSteps().size() + 1;
   }
+
+  protected abstract boolean isComplete(Progress progress);
+
+  protected abstract WorkflowName getWorkflowName();
+
+  protected abstract WorkflowStepPrompt getStep(int stepNumber, Progress progress);
+
+  protected abstract Progress processInput(int stepNumber, ProgressStep step, Progress progress);
 }

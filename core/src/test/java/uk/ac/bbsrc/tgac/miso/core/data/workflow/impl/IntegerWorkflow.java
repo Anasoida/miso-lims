@@ -19,23 +19,6 @@ public class IntegerWorkflow extends AbstractWorkflow {
     return progress.getSteps().size() == 1;
   }
 
-  // todo: make method in abstract class
-  @Override
-  public void processInput(int stepNumber, ProgressStep step) {
-    if (isExistingStepNumber(stepNumber) || (!(nextStepNumber() == 2) && stepNumber == nextStepNumber())) {
-      clearStepsAfter(stepNumber);
-
-      step.accept(workflowStep);
-
-      step.setProgress(getProgress());
-      step.setStepNumber(nextStepNumber());
-
-      getProgress().getSteps().add(step);
-    } else {
-      throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
-    }
-  }
-
   @Override
   protected WorkflowName getWorkflowName() {
     return WORKFLOW_NAME;
@@ -46,5 +29,23 @@ public class IntegerWorkflow extends AbstractWorkflow {
     if (stepNumber == 1) return workflowStep.getPrompt();
 
     throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
+  }
+
+  @Override
+  protected Progress processInput(int stepNumber, ProgressStep step, Progress progress) {
+    if (isExistingStepNumber(stepNumber) || (!(nextStepNumber() == 2) && stepNumber == nextStepNumber())) {
+      clearStepsAfter(stepNumber);
+
+      step.accept(workflowStep);
+
+      step.setProgress(progress);
+      step.setStepNumber(nextStepNumber());
+
+      progress.getSteps().add(step);
+
+      return progress;
+    } else {
+      throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
+    }
   }
 }
