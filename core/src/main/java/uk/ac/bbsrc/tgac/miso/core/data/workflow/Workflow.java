@@ -7,11 +7,18 @@ public interface Workflow {
 
   WorkflowStepPrompt getNextStep();
 
+  /**
+   * @param stepNumber 1-indexed step number
+   */
   WorkflowStepPrompt getStep(int stepNumber);
 
-  void processInput(ProgressStep step);
+  boolean processInput(ProgressStep step);
 
-  void processInput(int stepNumber, ProgressStep step);
+  /**
+   * @param stepNumber 1-index step number
+   * @return true if the Workflow is complete
+   */
+  boolean processInput(int stepNumber, ProgressStep step);
 
   /**
    * Remove the last ProgressStep

@@ -9,6 +9,10 @@ import uk.ac.bbsrc.tgac.miso.core.data.workflow.impl.ProgressImpl;
 public abstract class AbstractWorkflow implements Workflow {
   private Progress progress;
 
+  public AbstractWorkflow(Progress progress) {
+    this.setProgress(progress);
+  }
+
   @Override
   public Progress getProgress() {
     return progress;
@@ -29,8 +33,8 @@ public abstract class AbstractWorkflow implements Workflow {
   }
 
   @Override
-  public void processInput(ProgressStep step) {
-    processInput(nextStepNumber(), step);
+  public boolean processInput(ProgressStep step) {
+    return processInput(nextStepNumber(), step);
   }
 
   protected void clearStepsAfter(int stepNumber) {
