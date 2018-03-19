@@ -45,7 +45,7 @@ public abstract class AbstractWorkflow implements Workflow {
 
   @Override
   public void cancelInput() {
-    getProgress().setSteps(Collections.emptyList());
+    progress.setSteps(Collections.emptyList());
   }
 
   @Override
@@ -61,20 +61,26 @@ public abstract class AbstractWorkflow implements Workflow {
   @Override
   public void processInput(int stepNumber, ProgressStep step) {
     if (isExistingStepNumber(stepNumber) || (stepNumber == nextStepNumber() && !isComplete())) {
-      progress = processInput(stepNumber, step, progress);
+      clearStepsAfter(stepNumber);
+      step.accept(getWorkflowStep(stepNumber, progress));
+
+      step.setProgress(progress);
+      step.setStepNumber(nextStepNumber());
+
+      progress.getSteps().add(step);
     } else {
       throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
     }
   }
 
-  protected void clearStepsAfter(int stepNumber) {
-    List<ProgressStep> steps = new ArrayList<>(getProgress().getSteps());
+  private void clearStepsAfter(int stepNumber) {
+    List<ProgressStep> steps = new ArrayList<>(progress.getSteps());
     steps.subList(stepNumber - 1, steps.size()).clear();
 
-    getProgress().setSteps(steps);
+    progress.setSteps(steps);
   }
 
-  protected boolean isExistingStepNumber(int stepNumber) {
+  private boolean isExistingStepNumber(int stepNumber) {
     return 1 <= stepNumber && stepNumber <= currentStepNumber();
   }
 
@@ -97,11 +103,11 @@ public abstract class AbstractWorkflow implements Workflow {
   }
 
   private int currentStepNumber() {
-    return getProgress().getSteps().size();
+    return progress.getSteps().size();
   }
 
-  protected int nextStepNumber() {
-    return getProgress().getSteps().size() + 1;
+  private int nextStepNumber() {
+    return progress.getSteps().size() + 1;
   }
 
   protected abstract boolean isComplete(Progress progress);
@@ -110,5 +116,5 @@ public abstract class AbstractWorkflow implements Workflow {
 
   protected abstract WorkflowStepPrompt getStep(int stepNumber, Progress progress);
 
-  protected abstract Progress processInput(int stepNumber, ProgressStep step, Progress progress);
+  protected abstract WorkflowStep getWorkflowStep(int stepNumber, Progress progress);
 }

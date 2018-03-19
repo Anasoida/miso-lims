@@ -15,6 +15,11 @@ public class IntegerWorkflow extends AbstractWorkflow {
   }
 
   @Override
+  protected WorkflowStep getWorkflowStep(int stepNumber, Progress progress) {
+    return workflowStep;
+  }
+
+  @Override
   protected boolean isComplete(Progress progress) {
     return progress.getSteps().size() == 1;
   }
@@ -31,17 +36,17 @@ public class IntegerWorkflow extends AbstractWorkflow {
     throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
   }
 
-  @Override
-  protected Progress processInput(int stepNumber, ProgressStep step, Progress progress) {
-    clearStepsAfter(stepNumber);
-
-    step.accept(workflowStep);
-
-    step.setProgress(progress);
-    step.setStepNumber(nextStepNumber());
-
-    progress.getSteps().add(step);
-
-    return progress;
-  }
+//  @Override
+//  protected Progress processInput(int stepNumber, ProgressStep step, Progress progress) {
+//    clearStepsAfter(stepNumber);
+//
+//    step.accept(workflowStep);
+//
+//    step.setProgress(progress);
+//    step.setStepNumber(nextStepNumber());
+//
+//    progress.getSteps().add(step);
+//
+//    return progress;
+//  }
 }
