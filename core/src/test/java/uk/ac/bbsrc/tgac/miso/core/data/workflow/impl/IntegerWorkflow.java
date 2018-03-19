@@ -33,19 +33,15 @@ public class IntegerWorkflow extends AbstractWorkflow {
 
   @Override
   protected Progress processInput(int stepNumber, ProgressStep step, Progress progress) {
-    if (isExistingStepNumber(stepNumber) || (!(nextStepNumber() == 2) && stepNumber == nextStepNumber())) {
-      clearStepsAfter(stepNumber);
+    clearStepsAfter(stepNumber);
 
-      step.accept(workflowStep);
+    step.accept(workflowStep);
 
-      step.setProgress(progress);
-      step.setStepNumber(nextStepNumber());
+    step.setProgress(progress);
+    step.setStepNumber(nextStepNumber());
 
-      progress.getSteps().add(step);
+    progress.getSteps().add(step);
 
-      return progress;
-    } else {
-      throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
-    }
+    return progress;
   }
 }

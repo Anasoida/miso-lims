@@ -60,7 +60,11 @@ public abstract class AbstractWorkflow implements Workflow {
 
   @Override
   public void processInput(int stepNumber, ProgressStep step) {
-    progress = processInput(stepNumber, step, progress);
+    if (isExistingStepNumber(stepNumber) || (stepNumber == nextStepNumber() && !isComplete())) {
+      progress = processInput(stepNumber, step, progress);
+    } else {
+      throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
+    }
   }
 
   protected void clearStepsAfter(int stepNumber) {
