@@ -3,7 +3,7 @@ package uk.ac.bbsrc.tgac.miso.core.data.workflow.impl;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow.WorkflowName.*;
+import static uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow.WorkflowName.LOADSEQUENCER;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +31,7 @@ public class IntegerWorkflowTest {
   private static final long USER_ID = 2;
   private static final int INPUT_1 = 3;
   private static final int INPUT_2 = 4;
+
   // Use null for WorkflowName since we can't create an Enum value for a test workflow
   private static final WorkflowName WORKFLOW_NAME = null;
 
