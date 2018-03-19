@@ -12,13 +12,12 @@ public interface Workflow {
    */
   WorkflowStepPrompt getStep(int stepNumber);
 
-  boolean processInput(ProgressStep step);
+  void processInput(ProgressStep step);
 
   /**
-   * @param stepNumber 1-index step number
-   * @return true if the Workflow is complete
+   * @param stepNumber 1-indexed step number
    */
-  boolean processInput(int stepNumber, ProgressStep step);
+  void processInput(int stepNumber, ProgressStep step);
 
   /**
    * Remove the last ProgressStep
@@ -29,4 +28,6 @@ public interface Workflow {
   void setProgress(Progress progress);
 
   Progress getProgress();
+
+  boolean isComplete();
 }

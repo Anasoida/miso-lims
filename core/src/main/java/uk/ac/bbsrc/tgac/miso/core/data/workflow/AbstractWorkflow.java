@@ -33,8 +33,8 @@ public abstract class AbstractWorkflow implements Workflow {
   }
 
   @Override
-  public boolean processInput(ProgressStep step) {
-    return processInput(nextStepNumber(), step);
+  public void processInput(ProgressStep step) {
+    processInput(nextStepNumber(), step);
   }
 
   protected void clearStepsAfter(int stepNumber) {

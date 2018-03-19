@@ -27,7 +27,7 @@ public class IntegerWorkflow extends AbstractWorkflow {
 
   // todo: make method in abstract class
   @Override
-  public boolean processInput(int stepNumber, ProgressStep step) {
+  public void processInput(int stepNumber, ProgressStep step) {
     if (isExistingStepNumber(stepNumber) || (!isComplete() && stepNumber == nextStepNumber())) {
       clearStepsAfter(stepNumber);
 
@@ -37,15 +37,14 @@ public class IntegerWorkflow extends AbstractWorkflow {
       step.setStepNumber(nextStepNumber());
 
       getProgress().getSteps().add(step);
-
-      return isComplete();
     } else {
       throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
     }
   }
 
   // todo: take parameters instead of calling higher-level methods
-  private boolean isComplete() {
+  @Override
+  public boolean isComplete() {
     return nextStepNumber() == 2;
   }
 

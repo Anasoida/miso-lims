@@ -2,6 +2,7 @@ package uk.ac.bbsrc.tgac.miso.core.data.workflow.impl;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow.WorkflowName.LOADSEQUENCER;
 
 import java.util.ArrayList;
@@ -92,8 +93,9 @@ public class IntegerWorkflowTest {
   @Test
   public void testProcessValidInput() {
     workflow = new IntegerWorkflow(makeProgress());
-    workflow.processInput(makeIntegerProgressStep(INPUT_1));
 
+    workflow.processInput(makeIntegerProgressStep(INPUT_1));
+    assertTrue(workflow.isComplete());
     assertEquivalent(makeProgress(INPUT_1), workflow.getProgress());
   }
 
@@ -106,12 +108,6 @@ public class IntegerWorkflowTest {
     workflow.cancelInput();
 
     assertEquivalent(makeProgress(), workflow.getProgress());
-  }
-
-  @Test
-  public void testProcessInputReturnsTrue() {
-    workflow = new IntegerWorkflow(makeProgress());
-    assertTrue(workflow.processInput(makeIntegerProgressStep(INPUT_1)));
   }
 
   @Test
@@ -159,7 +155,7 @@ public class IntegerWorkflowTest {
   public void testProcessValidInputAtFirstStep() {
     workflow = new IntegerWorkflow(makeProgress());
     workflow.processInput(1, makeIntegerProgressStep(INPUT_1));
-
+    assertTrue(workflow.isComplete());
     assertEquivalent(makeProgress(INPUT_1), workflow.getProgress());
   }
 
@@ -178,7 +174,7 @@ public class IntegerWorkflowTest {
 
     workflow.processInput(makeIntegerProgressStep(INPUT_1));
     workflow.processInput(1, makeIntegerProgressStep(INPUT_2));
-
+    assertTrue(workflow.isComplete());
     assertEquivalent(makeProgress(INPUT_2), workflow.getProgress());
   }
 
@@ -194,6 +190,7 @@ public class IntegerWorkflowTest {
     workflow.processInput(makeIntegerProgressStep(INPUT_1));
 
     workflow.setProgress(makeProgress());
+    assertFalse(workflow.isComplete());
     assertEquivalent(makeProgress(), workflow.getProgress());
   }
 
