@@ -9,6 +9,9 @@ import uk.ac.bbsrc.tgac.miso.core.data.workflow.impl.ProgressImpl;
 public abstract class AbstractWorkflow implements Workflow {
   private Progress progress;
 
+  /**
+   * @param progress Progress object with all fields set
+   */
   public AbstractWorkflow(Progress progress) {
     this.setProgress(progress);
   }
@@ -55,14 +58,16 @@ public abstract class AbstractWorkflow implements Workflow {
 
   @Override
   public WorkflowStepPrompt getStep(int stepNumber) {
-    return getStep(stepNumber, progress);
+    if (validStepNumber(stepNumber)) return getStep(stepNumber, progress);
+
+    throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
   }
 
   @Override
   public void processInput(int stepNumber, ProgressStep step) {
-    if (isExistingStepNumber(stepNumber) || (stepNumber == nextStepNumber() && !isComplete())) {
+    if (validStepNumber(stepNumber)) {
       clearStepsAfter(stepNumber);
-      step.accept(getWorkflowStep(stepNumber, progress));
+      validateStep(stepNumber, step);
 
       step.setProgress(progress);
       step.setStepNumber(nextStepNumber());
@@ -71,6 +76,14 @@ public abstract class AbstractWorkflow implements Workflow {
     } else {
       throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
     }
+  }
+
+  private boolean validStepNumber(int stepNumber) {
+    return isExistingStepNumber(stepNumber) || (stepNumber == nextStepNumber() && !isComplete());
+  }
+
+  private void validateStep(int stepNumber, ProgressStep step) {
+    step.accept(getWorkflowStep(stepNumber, progress));
   }
 
   private void clearStepsAfter(int stepNumber) {

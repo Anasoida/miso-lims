@@ -2,7 +2,6 @@ package uk.ac.bbsrc.tgac.miso.core.data.workflow.impl;
 
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.AbstractWorkflow;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.Progress;
-import uk.ac.bbsrc.tgac.miso.core.data.workflow.ProgressStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStepPrompt;
 
@@ -31,22 +30,6 @@ public class IntegerWorkflow extends AbstractWorkflow {
 
   @Override
   protected WorkflowStepPrompt getStep(int stepNumber, Progress progress) {
-    if (stepNumber == 1) return workflowStep.getPrompt();
-
-    throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
+    return getWorkflowStep(stepNumber, progress).getPrompt();
   }
-
-//  @Override
-//  protected Progress processInput(int stepNumber, ProgressStep step, Progress progress) {
-//    clearStepsAfter(stepNumber);
-//
-//    step.accept(workflowStep);
-//
-//    step.setProgress(progress);
-//    step.setStepNumber(nextStepNumber());
-//
-//    progress.getSteps().add(step);
-//
-//    return progress;
-//  }
 }
