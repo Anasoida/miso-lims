@@ -21,6 +21,7 @@ public abstract class AbstractWorkflow implements Workflow {
   @Override
   public void setProgress(Progress progress) {
     validateProgress(progress);
+
     this.progress = new ProgressImpl();
     this.progress.setId(progress.getId());
     this.progress.setWorkflowName(progress.getWorkflowName());
@@ -35,6 +36,13 @@ public abstract class AbstractWorkflow implements Workflow {
   @Override
   public void processInput(ProgressStep step) {
     processInput(nextStepNumber(), step);
+  }
+
+  protected abstract boolean isComplete(Progress progress);
+
+  @Override
+  public boolean isComplete() {
+    return isComplete(progress);
   }
 
   protected void clearStepsAfter(int stepNumber) {
@@ -53,7 +61,19 @@ public abstract class AbstractWorkflow implements Workflow {
     return 1 <= stepNumber && stepNumber <= currentStepNumber();
   }
 
+  @Override
+  public WorkflowStepPrompt getNextStep() {
+    return getStep(nextStepNumber());
+  }
+
   protected abstract WorkflowName getWorkflowName();
+
+  protected abstract WorkflowStepPrompt getStep(int stepNumber, Progress progress);
+
+  @Override
+  public WorkflowStepPrompt getStep(int stepNumber) {
+    return getStep(stepNumber, progress);
+  }
 
   private void processInputs(List<ProgressStep> steps) {
     for (ProgressStep step : steps) {

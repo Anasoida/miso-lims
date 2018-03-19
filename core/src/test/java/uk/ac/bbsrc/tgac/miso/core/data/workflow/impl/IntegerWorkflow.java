@@ -7,6 +7,7 @@ import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStepPrompt;
 
 public class IntegerWorkflow extends AbstractWorkflow {
+  private static final WorkflowName WORKFLOW_NAME = null;
   private static final WorkflowStep workflowStep = new IntegerWorkflowStep("Input an integer.");
 
   IntegerWorkflow(Progress progress) {
@@ -14,21 +15,14 @@ public class IntegerWorkflow extends AbstractWorkflow {
   }
 
   @Override
-  public WorkflowStepPrompt getNextStep() {
-    return (nextStepNumber() == 1) ? workflowStep.getPrompt() : null;
-  }
-
-  @Override
-  public WorkflowStepPrompt getStep(int stepNumber) {
-    if (stepNumber == 1) return workflowStep.getPrompt();
-
-    throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
+  protected boolean isComplete(Progress progress) {
+    return progress.getSteps().size() == 1;
   }
 
   // todo: make method in abstract class
   @Override
   public void processInput(int stepNumber, ProgressStep step) {
-    if (isExistingStepNumber(stepNumber) || (!isComplete() && stepNumber == nextStepNumber())) {
+    if (isExistingStepNumber(stepNumber) || (!(nextStepNumber() == 2) && stepNumber == nextStepNumber())) {
       clearStepsAfter(stepNumber);
 
       step.accept(workflowStep);
@@ -42,14 +36,15 @@ public class IntegerWorkflow extends AbstractWorkflow {
     }
   }
 
-  // todo: take parameters instead of calling higher-level methods
   @Override
-  public boolean isComplete() {
-    return nextStepNumber() == 2;
+  protected WorkflowName getWorkflowName() {
+    return WORKFLOW_NAME;
   }
 
   @Override
-  protected WorkflowName getWorkflowName() {
-    return null;
+  protected WorkflowStepPrompt getStep(int stepNumber, Progress progress) {
+    if (stepNumber == 1) return workflowStep.getPrompt();
+
+    throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
   }
 }
