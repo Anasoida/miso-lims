@@ -58,7 +58,7 @@ public abstract class AbstractWorkflow implements Workflow {
 
   @Override
   public WorkflowStepPrompt getStep(int stepNumber) {
-    if (validStepNumber(stepNumber)) return getStep(stepNumber, progress);
+    if (validStepNumber(stepNumber)) return getWorkflowStep(stepNumber).getPrompt();
 
     throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
   }
@@ -83,7 +83,7 @@ public abstract class AbstractWorkflow implements Workflow {
   }
 
   private void validateStep(int stepNumber, ProgressStep step) {
-    step.accept(getWorkflowStep(stepNumber, progress));
+    step.accept(getWorkflowStep(stepNumber));
   }
 
   private void clearStepsAfter(int stepNumber) {
@@ -127,7 +127,5 @@ public abstract class AbstractWorkflow implements Workflow {
 
   protected abstract WorkflowName getWorkflowName();
 
-  protected abstract WorkflowStepPrompt getStep(int stepNumber, Progress progress);
-
-  protected abstract WorkflowStep getWorkflowStep(int stepNumber, Progress progress);
+  protected abstract WorkflowStep getWorkflowStep(int stepNumber);
 }

@@ -14,7 +14,7 @@ public class IntegerWorkflow extends AbstractWorkflow {
   }
 
   @Override
-  protected WorkflowStep getWorkflowStep(int stepNumber, Progress progress) {
+  protected WorkflowStep getWorkflowStep(int stepNumber) {
     return workflowStep;
   }
 
@@ -26,10 +26,5 @@ public class IntegerWorkflow extends AbstractWorkflow {
   @Override
   protected WorkflowName getWorkflowName() {
     return WORKFLOW_NAME;
-  }
-
-  @Override
-  protected WorkflowStepPrompt getStep(int stepNumber, Progress progress) {
-    return getWorkflowStep(stepNumber, progress).getPrompt();
   }
 }
