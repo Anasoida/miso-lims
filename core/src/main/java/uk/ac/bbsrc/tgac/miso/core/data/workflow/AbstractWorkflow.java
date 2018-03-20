@@ -37,11 +37,6 @@ public abstract class AbstractWorkflow implements Workflow {
   }
 
   @Override
-  public boolean isComplete() {
-    return isComplete(progress);
-  }
-
-  @Override
   public void cancelInput() {
     progress.setSteps(Collections.emptyList());
   }
@@ -112,8 +107,6 @@ public abstract class AbstractWorkflow implements Workflow {
   private int nextStepNumber() {
     return progress.getSteps().size() + 1;
   }
-
-  protected abstract boolean isComplete(Progress progress);
 
   protected abstract WorkflowName getWorkflowName();
 

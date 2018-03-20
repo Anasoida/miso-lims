@@ -28,7 +28,7 @@ public class IntegerWorkflow extends AbstractWorkflow {
   }
 
   @Override
-  protected boolean isComplete(Progress progress) {
+  public boolean isComplete() {
     return complete;
   }
 
