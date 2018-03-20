@@ -24,7 +24,7 @@ import uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow.WorkflowName;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStepPrompt;
 
-public class IntegerWorkflowTest {
+public class TestWorkflowTest {
   private static final long PROGRESS_ID = 1;
   private static final long USER_ID = 2;
   private static final int INPUT_1 = 3;
@@ -40,20 +40,20 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testCancelInputWithoutInput() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
     // Should not throw any exceptions
     workflow.cancelInput();
   }
 
   @Test
   public void testGetProgressWithoutInput() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
     assertEquivalent(makeProgress(), workflow.getProgress());
   }
 
   @Test
   public void testGetStepZero() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
 
     exception.expect(IllegalArgumentException.class);
     workflow.getStep(0);
@@ -61,7 +61,7 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testGetStepAfterCurrentStep() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
 
     exception.expect(IllegalArgumentException.class);
     workflow.getStep(2);
@@ -69,21 +69,21 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testGetFirstStep() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
 
     assertIntegerPrompt(workflow.getStep(1));
   }
 
   @Test
   public void testGetNextStep() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
 
     assertIntegerPrompt(workflow.getNextStep());
   }
 
   @Test
   public void testProcessInvalidInput() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
 
     exception.expect(IllegalArgumentException.class);
     workflow.processInput(new PoolProgressStep());
@@ -91,7 +91,7 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testProcessValidInput() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
 
     workflow.processInput(makeIntegerProgressStep(INPUT_1));
     assertTrue(workflow.isComplete());
@@ -102,7 +102,7 @@ public class IntegerWorkflowTest {
   public void testProcessInputThenCancelInput() {
     IntegerProgressStep step = makeIntegerProgressStep(INPUT_1);
 
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
     workflow.processInput(step);
     workflow.cancelInput();
 
@@ -111,7 +111,7 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testGetStepAfterProcessInput() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
     workflow.processInput(makeIntegerProgressStep(INPUT_1));
     exception.expect(IllegalArgumentException.class);
     workflow.getStep(2);
@@ -119,7 +119,7 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testProcessInputAfterComplete() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
     workflow.processInput(makeIntegerProgressStep(INPUT_1));
 
     exception.expect(IllegalArgumentException.class);
@@ -128,7 +128,7 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testProcessInputAtStepZero() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
 
     exception.expect(IllegalArgumentException.class);
     workflow.processInput(0, makeIntegerProgressStep(INPUT_1));
@@ -136,7 +136,7 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testProcessInputAtStepAfterCurrentStep() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
 
     exception.expect(IllegalArgumentException.class);
     workflow.processInput(2, makeIntegerProgressStep(INPUT_1));
@@ -144,7 +144,7 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testProcessInvalidInputAtFirstStep() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
 
     exception.expect(IllegalArgumentException.class);
     workflow.processInput(1, new PoolProgressStep());
@@ -152,7 +152,7 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testProcessValidInputAtFirstStep() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
     workflow.processInput(1, makeIntegerProgressStep(INPUT_1));
     assertTrue(workflow.isComplete());
     assertEquivalent(makeProgress(INPUT_1), workflow.getProgress());
@@ -160,7 +160,7 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testProcessInputAtSecondStepAfterProcessInput() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
 
     workflow.processInput(makeIntegerProgressStep(INPUT_1));
     exception.expect(IllegalArgumentException.class);
@@ -169,7 +169,7 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testReprocessInputAtFirstStep() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
 
     workflow.processInput(makeIntegerProgressStep(INPUT_1));
     workflow.processInput(1, makeIntegerProgressStep(INPUT_2));
@@ -179,13 +179,13 @@ public class IntegerWorkflowTest {
 
   @Test
   public void testSetEmptyProgressWithoutInput() {
-    workflow = new IntegerWorkflow(makeProgress());
+    workflow = new TestWorkflow(makeProgress());
     assertEquivalent(makeProgress(), workflow.getProgress());
   }
 
   @Test
   public void testSetProgressWithInput() {
-    workflow = new IntegerWorkflow(makeProgress(INPUT_1));
+    workflow = new TestWorkflow(makeProgress(INPUT_1));
     assertEquivalent(makeProgress(INPUT_1), workflow.getProgress());
   }
 
@@ -195,7 +195,7 @@ public class IntegerWorkflowTest {
     progress.setWorkflowName(LOADSEQUENCER);
 
     exception.expect(IllegalArgumentException.class);
-    workflow = new IntegerWorkflow(progress);
+    workflow = new TestWorkflow(progress);
   }
 
   @Test
@@ -205,7 +205,7 @@ public class IntegerWorkflowTest {
     progress.setLastModified(new Date(0));
 
     exception.expect(IllegalArgumentException.class);
-    workflow = new IntegerWorkflow(progress);
+    workflow = new TestWorkflow(progress);
   }
 
   @Test
@@ -216,12 +216,12 @@ public class IntegerWorkflowTest {
     progress.getSteps().add(new PoolProgressStep());
 
     exception.expect(IllegalArgumentException.class);
-    workflow = new IntegerWorkflow(progress);
+    workflow = new TestWorkflow(progress);
   }
 
   @Test
   public void testFailedProcessInputDoesNotChangeProgress() {
-    workflow = new IntegerWorkflow(makeProgress(INPUT_1));
+    workflow = new TestWorkflow(makeProgress(INPUT_1));
 
     try {
       // Try to set an invalid input at step 1

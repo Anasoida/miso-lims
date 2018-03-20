@@ -5,13 +5,13 @@ import uk.ac.bbsrc.tgac.miso.core.data.workflow.Progress;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.ProgressStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStep;
 
-public class IntegerWorkflow extends AbstractWorkflow {
+public class TestWorkflow extends AbstractWorkflow {
   private static final WorkflowName WORKFLOW_NAME = null;
   private static final WorkflowStep workflowStep = new IntegerWorkflowStep("Input an integer.");
 
   private boolean complete = false;
 
-  IntegerWorkflow(Progress progress) {
+  TestWorkflow(Progress progress) {
     super(progress);
   }
 
