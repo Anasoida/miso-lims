@@ -22,7 +22,6 @@ public class IntegerWorkflow extends AbstractWorkflow {
 
   @Override
   protected void transition(int stepNumber, ProgressStep step) {
-    assert (stepNumber == 1);
     step.accept(workflowStep);
     complete = true;
   }

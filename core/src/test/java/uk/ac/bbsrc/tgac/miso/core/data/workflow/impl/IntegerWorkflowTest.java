@@ -221,6 +221,20 @@ public class IntegerWorkflowTest {
     workflow = new IntegerWorkflow(progress);
   }
 
+  @Test
+  public void testFailedProcessInputDoesNotChangeProgress() {
+    workflow = new IntegerWorkflow(makeProgress(INPUT_1));
+
+    try {
+      // Try to set an invalid input at step 1
+      workflow.processInput(1, new PoolProgressStep());
+    } catch (Exception e) {
+
+    }
+
+    assertEquivalent(makeProgress(INPUT_1), workflow.getProgress());
+  }
+
   private IntegerProgressStep makeIntegerProgressStep(int input) {
     IntegerProgressStep step = new IntegerProgressStep();
     step.setInput(input);

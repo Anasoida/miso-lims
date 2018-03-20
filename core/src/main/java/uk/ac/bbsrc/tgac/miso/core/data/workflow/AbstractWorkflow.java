@@ -57,13 +57,10 @@ public abstract class AbstractWorkflow implements Workflow {
   public void processInput(int stepNumber, ProgressStep step) {
     if (!validStepNumber(stepNumber)) throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
 
-    clearStepsAfter(stepNumber);
-
     transition(stepNumber, step);
-
+    clearStepsAfter(stepNumber);
     step.setProgress(progress);
     step.setStepNumber(nextStepNumber());
-
     progress.getSteps().add(step);
   }
 
