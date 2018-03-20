@@ -185,12 +185,6 @@ public class TestWorkflowTest {
   }
 
   @Test
-  public void testSetEmptyProgressWithoutInput() {
-    workflow = new TestWorkflow(makeProgress());
-    assertEquivalent(makeProgress(), workflow.getProgress());
-  }
-
-  @Test
   public void testSetProgressWithInput() {
     workflow = new TestWorkflow(makeProgress(INPUT_1));
     assertEquivalent(makeProgress(INPUT_1), workflow.getProgress());
