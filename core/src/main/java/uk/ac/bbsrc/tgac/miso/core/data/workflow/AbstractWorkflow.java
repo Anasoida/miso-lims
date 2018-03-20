@@ -13,16 +13,6 @@ public abstract class AbstractWorkflow implements Workflow {
    * @param progress Progress object with all fields set
    */
   public AbstractWorkflow(Progress progress) {
-    this.setProgress(progress);
-  }
-
-  @Override
-  public Progress getProgress() {
-    return progress;
-  }
-
-  @Override
-  public void setProgress(Progress progress) {
     validateProgress(progress);
 
     this.progress = new ProgressImpl();
@@ -34,6 +24,11 @@ public abstract class AbstractWorkflow implements Workflow {
     this.progress.setSteps(Collections.emptyList());
 
     processInputs(new ArrayList<>(progress.getSteps()));
+  }
+
+  @Override
+  public Progress getProgress() {
+    return progress;
   }
 
   @Override
@@ -65,25 +60,20 @@ public abstract class AbstractWorkflow implements Workflow {
 
   @Override
   public void processInput(int stepNumber, ProgressStep step) {
-    if (validStepNumber(stepNumber)) {
-      clearStepsAfter(stepNumber);
-      validateStep(stepNumber, step);
+    if (!validStepNumber(stepNumber)) throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
 
-      step.setProgress(progress);
-      step.setStepNumber(nextStepNumber());
+    clearStepsAfter(stepNumber);
 
-      progress.getSteps().add(step);
-    } else {
-      throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
-    }
+    transition(stepNumber, step);
+
+    step.setProgress(progress);
+    step.setStepNumber(nextStepNumber());
+
+    progress.getSteps().add(step);
   }
 
   private boolean validStepNumber(int stepNumber) {
     return isExistingStepNumber(stepNumber) || (stepNumber == nextStepNumber() && !isComplete());
-  }
-
-  private void validateStep(int stepNumber, ProgressStep step) {
-    step.accept(getWorkflowStep(stepNumber));
   }
 
   private void clearStepsAfter(int stepNumber) {
@@ -128,4 +118,9 @@ public abstract class AbstractWorkflow implements Workflow {
   protected abstract WorkflowName getWorkflowName();
 
   protected abstract WorkflowStep getWorkflowStep(int stepNumber);
+
+  /**
+   * Process the step input at stepNumber, discarding steps if necessary
+   */
+  protected abstract void transition(int stepNumber, ProgressStep step);
 }

@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -181,16 +182,6 @@ public class IntegerWorkflowTest {
   @Test
   public void testSetEmptyProgressWithoutInput() {
     workflow = new IntegerWorkflow(makeProgress());
-    assertEquivalent(makeProgress(), workflow.getProgress());
-  }
-
-  @Test
-  public void testSetEmptyProgressAfterInput() {
-    workflow = new IntegerWorkflow(makeProgress());
-    workflow.processInput(makeIntegerProgressStep(INPUT_1));
-
-    workflow.setProgress(makeProgress());
-    assertFalse(workflow.isComplete());
     assertEquivalent(makeProgress(), workflow.getProgress());
   }
 

@@ -25,11 +25,6 @@ public interface Workflow {
    */
   void cancelInput();
 
-  /**
-   * Validate and store the given Progress
-   */
-  void setProgress(Progress progress);
-
   Progress getProgress();
 
   boolean isComplete();
