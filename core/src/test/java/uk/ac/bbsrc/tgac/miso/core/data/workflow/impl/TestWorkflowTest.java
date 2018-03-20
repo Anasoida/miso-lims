@@ -2,6 +2,7 @@ package uk.ac.bbsrc.tgac.miso.core.data.workflow.impl;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow.WorkflowName.LOADSEQUENCER;
 
 import java.util.ArrayList;
@@ -43,6 +44,12 @@ public class TestWorkflowTest {
     workflow = new TestWorkflow(makeProgress());
     // Should not throw any exceptions
     workflow.cancelInput();
+  }
+
+  @Test
+  public void testIsNotCompleteWithoutInput() {
+    workflow = new TestWorkflow(makeProgress());
+    assertFalse(workflow.isComplete());
   }
 
   @Test
