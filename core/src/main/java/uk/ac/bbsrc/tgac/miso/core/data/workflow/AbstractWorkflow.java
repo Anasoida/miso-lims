@@ -58,14 +58,15 @@ public abstract class AbstractWorkflow implements Workflow {
     if (!validStepNumber(stepNumber)) throw new IllegalArgumentException(String.format("Invalid step number: %d", stepNumber));
 
     transition(stepNumber, step);
+
     clearStepsAfter(stepNumber);
+    addStepToProgress(step);
+  }
+
+  private void addStepToProgress(ProgressStep step) {
     step.setProgress(progress);
     step.setStepNumber(nextStepNumber());
     progress.getSteps().add(step);
-  }
-
-  private boolean validStepNumber(int stepNumber) {
-    return isExistingStepNumber(stepNumber) || (stepNumber == nextStepNumber() && !isComplete());
   }
 
   private void clearStepsAfter(int stepNumber) {
@@ -77,6 +78,10 @@ public abstract class AbstractWorkflow implements Workflow {
 
   private boolean isExistingStepNumber(int stepNumber) {
     return 1 <= stepNumber && stepNumber <= currentStepNumber();
+  }
+
+  private boolean validStepNumber(int stepNumber) {
+    return isExistingStepNumber(stepNumber) || (stepNumber == nextStepNumber() && !isComplete());
   }
 
   private void processInputs(List<ProgressStep> steps) {
@@ -102,7 +107,7 @@ public abstract class AbstractWorkflow implements Workflow {
   }
 
   private int nextStepNumber() {
-    return progress.getSteps().size() + 1;
+    return currentStepNumber() + 1;
   }
 
   protected abstract WorkflowName getWorkflowName();

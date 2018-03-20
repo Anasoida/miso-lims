@@ -2,7 +2,6 @@ package uk.ac.bbsrc.tgac.miso.core.data.workflow.impl;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow.WorkflowName.LOADSEQUENCER;
 
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -228,8 +226,7 @@ public class IntegerWorkflowTest {
     try {
       // Try to set an invalid input at step 1
       workflow.processInput(1, new PoolProgressStep());
-    } catch (Exception e) {
-
+    } catch (Exception ignored) {
     }
 
     assertEquivalent(makeProgress(INPUT_1), workflow.getProgress());

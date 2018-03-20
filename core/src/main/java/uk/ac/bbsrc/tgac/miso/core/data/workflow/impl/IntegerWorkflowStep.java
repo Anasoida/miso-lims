@@ -9,7 +9,7 @@ import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStepPrompt;
 public class IntegerWorkflowStep implements WorkflowStep {
   private final String message;
 
-  public IntegerWorkflowStep(String message) {
+  IntegerWorkflowStep(String message) {
     this.message = message;
   }
 
