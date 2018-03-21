@@ -9,6 +9,7 @@ import com.google.common.collect.Sets;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.AbstractWorkflow;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.ProgressStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.ProgressStep.InputType;
+import uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStepPrompt;
 
@@ -69,6 +70,11 @@ public class TestWorkflow extends AbstractWorkflow {
     return steps.subList(0, nextStepNumber);
   }
 
+  @Override
+  protected WorkflowName getWorkflowName() {
+    return null;
+  }
+
   public static class PoolWorkflowStep implements WorkflowStep {
     private final String message;
     private PoolProgressStep progressStep;
@@ -125,6 +131,5 @@ public class TestWorkflow extends AbstractWorkflow {
     public ProgressStep getProgressStep() {
       return progressStep;
     }
-
   }
 }

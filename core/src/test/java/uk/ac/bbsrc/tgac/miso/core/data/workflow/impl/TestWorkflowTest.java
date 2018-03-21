@@ -3,6 +3,7 @@ package uk.ac.bbsrc.tgac.miso.core.data.workflow.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow.WorkflowName.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +39,13 @@ public class TestWorkflowTest {
   public final ExpectedException exception = ExpectedException.none();
 
   private Workflow workflow;
+
+  @Test
+  public void testCreateNewWorkflowWithIncorrectWorkflowName() {
+    workflow = new TestWorkflow();
+    exception.expect(IllegalArgumentException.class);
+    workflow.setProgress(makeProgress(LOADSEQUENCER));
+  }
 
   @Test
   public void testCreateNewWorkflow() {

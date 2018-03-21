@@ -19,6 +19,8 @@ public abstract class AbstractWorkflow implements Workflow {
 
   @Override
   public void setProgress(Progress progress) {
+    if (progress.getWorkflowName() != getWorkflowName()) throw new IllegalArgumentException("Invalid WorkflowName");
+
     processInputs(new ArrayList<>(progress.getSteps()));
     this.progress = progress;
   }
@@ -35,4 +37,6 @@ public abstract class AbstractWorkflow implements Workflow {
   }
 
   protected abstract List<WorkflowStep> getCompletedSteps();
+
+  protected abstract WorkflowName getWorkflowName();
 }
