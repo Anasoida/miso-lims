@@ -89,7 +89,7 @@ public class TestWorkflow extends AbstractWorkflow {
 
     @Override
     public String getLogMessage() {
-      return String.format("Processed Pool with id %d", progressStep.getInput());
+      return String.format("Processed Pool with id %d", progressStep.getInput().getId());
     }
 
     @Override
