@@ -7,9 +7,9 @@ import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStep;
 
 public class TestWorkflow extends AbstractWorkflow {
   private static final WorkflowName WORKFLOW_NAME = null;
-  private static final WorkflowStep workflowStep = new IntegerWorkflowStep("Input an integer.");
+  private static final WorkflowStep[] steps = { new IntegerWorkflowStep("Input an integer."), new PoolWorkflowStep("Input a pool.") };
 
-  private boolean complete = false;
+  private int currentStepNumber = 1;
 
   TestWorkflow(Progress progress) {
     super(progress);
@@ -17,18 +17,18 @@ public class TestWorkflow extends AbstractWorkflow {
 
   @Override
   protected WorkflowStep getWorkflowStep(int stepNumber) {
-    return workflowStep;
+    return steps[stepNumber - 1];
   }
 
   @Override
   protected void transition(int stepNumber, ProgressStep step) {
-    step.accept(workflowStep);
-    complete = true;
+    step.accept(getWorkflowStep(stepNumber));
+    currentStepNumber = stepNumber;
   }
 
   @Override
   public boolean isComplete() {
-    return complete;
+    return currentStepNumber == 2;
   }
 
   @Override
