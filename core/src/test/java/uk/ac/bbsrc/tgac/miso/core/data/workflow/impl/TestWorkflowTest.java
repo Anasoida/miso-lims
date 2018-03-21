@@ -30,6 +30,7 @@ public class TestWorkflowTest {
   private static final long USER_ID = 2;
   private static final int INT_1 = 3;
   private static final int INT_2 = 4;
+  private static final long POOL_ID = 5;
 
   // Use null for WorkflowName since we can't create an Enum value for a test workflow
   private static final WorkflowName WORKFLOW_NAME = null;
@@ -97,7 +98,7 @@ public class TestWorkflowTest {
   }
 
   @Test
-  public void testProcessValidInput() {
+  public void testProcessOneValidInput() {
     workflow = new TestWorkflow(makeProgress());
 
     workflow.processInput(makeIntegerProgressStep(INT_1));
@@ -206,6 +207,14 @@ public class TestWorkflowTest {
     }
 
     assertEquivalent(makeProgress(INT_1), workflow.getProgress());
+  }
+
+  @Test
+  public void testSecondInputInvalid() {
+    workflow = new TestWorkflow(makeProgress());
+    workflow.processInput(makeIntegerProgressStep(INT_1));
+    exception.expect(IllegalArgumentException.class);
+    workflow.processInput(makeIntegerProgressStep(INT_1));
   }
 
   private IntegerProgressStep makeIntegerProgressStep(int input) {
