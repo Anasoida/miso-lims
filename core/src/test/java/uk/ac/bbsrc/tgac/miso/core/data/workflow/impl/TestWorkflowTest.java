@@ -3,7 +3,7 @@ package uk.ac.bbsrc.tgac.miso.core.data.workflow.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow.WorkflowName.*;
+import static uk.ac.bbsrc.tgac.miso.core.data.workflow.Workflow.WorkflowName.LOADSEQUENCER;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,12 +14,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.eaglegenomics.simlims.core.User;
 import com.google.common.collect.Sets;
 
 import uk.ac.bbsrc.tgac.miso.core.data.Pool;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.PoolImpl;
-import uk.ac.bbsrc.tgac.miso.core.data.impl.UserImpl;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.Progress;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.ProgressStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.ProgressStep.InputType;
@@ -152,6 +150,23 @@ public class TestWorkflowTest {
     workflow = makeExistingWorkflow(makeIntegerStep(INT_1));
     workflow.cancelInput();
     assertNoInput(workflow);
+  }
+
+  @Test
+  public void testProcessInputAtPreviousStep() {
+    workflow = makeExistingWorkflow(makeIntegerStep(INT_1), makePoolStep(POOL_ID));
+    workflow.processInput(0, makeIntegerStep(INT_2));
+    assertReceivedOneInput(workflow, INT_2);
+  }
+
+  @Test
+  public void testProcessFailedInputDoesNotChangeProgress() {
+    workflow = makeExistingWorkflow(makeIntegerStep(INT_1));
+    try {
+      workflow.processInput(makeIntegerStep(INT_2));
+    } catch (Exception ignored) {
+    }
+    assertReceivedOneInput(workflow, INT_1);
   }
 
   private Workflow makeNewWorkflow() {
