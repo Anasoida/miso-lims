@@ -25,6 +25,8 @@ public interface WorkflowStep {
 
   String getLogMessage();
 
+  ProgressStep getProgressStep();
+
   /**
    * Private helper method
    */

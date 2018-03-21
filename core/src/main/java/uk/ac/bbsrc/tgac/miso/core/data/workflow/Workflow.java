@@ -1,31 +1,30 @@
 package uk.ac.bbsrc.tgac.miso.core.data.workflow;
 
+import java.util.List;
+
 public interface Workflow {
-  enum WorkflowName {
-    LOADSEQUENCER
-  }
+  Progress getProgress();
+
+  void setProgress(Progress progress);
 
   WorkflowStepPrompt getNextStep();
 
-  /**
-   * @param stepNumber 1-indexed step number
-   */
   WorkflowStepPrompt getStep(int stepNumber);
+
+  boolean isComplete();
+
+  List<String> getLog();
 
   void processInput(ProgressStep step);
 
-  /**
-   * @param stepNumber 1-indexed step number
-   */
   void processInput(int stepNumber, ProgressStep step);
 
   /**
-   * Remove the last ProgressStep
-   * If no input has been processed so far, do nothing
+   * Remove the last ProgressStep If no input has been processed so far, do nothing
    */
   void cancelInput();
 
-  Progress getProgress();
-
-  boolean isComplete();
+  enum WorkflowName {
+    LOADSEQUENCER
+  }
 }
