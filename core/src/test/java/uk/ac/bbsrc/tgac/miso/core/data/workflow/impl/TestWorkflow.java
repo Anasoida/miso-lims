@@ -8,6 +8,7 @@ import com.google.common.collect.Sets;
 
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.AbstractWorkflow;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.ProgressStep;
+import uk.ac.bbsrc.tgac.miso.core.data.workflow.ProgressStep.InputType;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStepPrompt;
 
@@ -17,12 +18,23 @@ public class TestWorkflow extends AbstractWorkflow {
 
   @Override
   public WorkflowStepPrompt getNextStep() {
-    return getStep(0);
+    return getStep(nextStepNumber);
   }
 
   @Override
   public WorkflowStepPrompt getStep(int stepNumber) {
+    if (!validStepNumber(stepNumber))
+      throw new IllegalArgumentException("Invalid step number");
+
     return steps.get(stepNumber).getPrompt();
+  }
+
+  private boolean validStepNumber(int stepNumber) {
+    return isExistingStepNumber(stepNumber) || (stepNumber == nextStepNumber && !isComplete());
+  }
+
+  private boolean isExistingStepNumber(int stepNumber) {
+    return 0 <= stepNumber && stepNumber <= currentStepNumber();
   }
 
   @Override
@@ -38,6 +50,7 @@ public class TestWorkflow extends AbstractWorkflow {
   @Override
   public void processInput(int stepNumber, ProgressStep step) {
     step.accept(steps.get(stepNumber));
+    step.setStepNumber(nextStepNumber);
     nextStepNumber++;
   }
 
@@ -57,7 +70,7 @@ public class TestWorkflow extends AbstractWorkflow {
 
   public static class PoolWorkflowStep implements WorkflowStep {
     private final String message;
-    private ProgressStep progressStep;
+    private PoolProgressStep progressStep;
 
     PoolWorkflowStep(String message) {
       this.message = message;
@@ -65,7 +78,7 @@ public class TestWorkflow extends AbstractWorkflow {
 
     @Override
     public WorkflowStepPrompt getPrompt() {
-      return new WorkflowStepPrompt(Collections.singleton(ProgressStep.InputType.POOL), message);
+      return new WorkflowStepPrompt(Collections.singleton(InputType.POOL), message);
     }
 
     @Override
@@ -75,8 +88,7 @@ public class TestWorkflow extends AbstractWorkflow {
 
     @Override
     public String getLogMessage() {
-      // todo
-      return null;
+      return String.format("Processed Pool with id %d", progressStep.getInput());
     }
 
     @Override
@@ -87,7 +99,7 @@ public class TestWorkflow extends AbstractWorkflow {
 
   public static class IntegerWorkflowStep implements WorkflowStep {
     private final String message;
-    private ProgressStep progressStep;
+    private IntegerProgressStep progressStep;
 
     IntegerWorkflowStep(String message) {
       this.message = message;
@@ -95,7 +107,7 @@ public class TestWorkflow extends AbstractWorkflow {
 
     @Override
     public WorkflowStepPrompt getPrompt() {
-      return new WorkflowStepPrompt(Sets.newHashSet(ProgressStep.InputType.INTEGER), message);
+      return new WorkflowStepPrompt(Sets.newHashSet(InputType.INTEGER), message);
     }
 
     @Override
@@ -105,8 +117,7 @@ public class TestWorkflow extends AbstractWorkflow {
 
     @Override
     public String getLogMessage() {
-      // todo
-      return null;
+      return String.format("Processed integer %d", progressStep.getInput());
     }
 
     @Override
