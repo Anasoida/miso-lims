@@ -19,9 +19,6 @@ public interface Workflow {
 
   void processInput(int stepNumber, ProgressStep step);
 
-  /**
-   * Remove the last ProgressStep If no input has been processed so far, do nothing
-   */
   void cancelInput();
 
   enum WorkflowName {
