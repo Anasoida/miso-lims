@@ -9,11 +9,7 @@ public abstract class AbstractWorkflow implements Workflow {
 
   @Override
   final public Progress getProgress() {
-    List<ProgressStep> steps = getCompletedSteps().stream().map(WorkflowStep::getProgressStep).collect(Collectors.toList());
-    for (ProgressStep step : steps) {
-      step.setProgress(progress);
-    }
-    progress.setSteps(steps);
+    progress.setSteps(getCompletedSteps().stream().map(WorkflowStep::getProgressStep).collect(Collectors.toList()));
     return progress;
   }
 
