@@ -77,7 +77,7 @@ public class TestWorkflow extends AbstractWorkflow {
     return WORKFLOW_NAME;
   }
 
-  public static class PoolWorkflowStep implements WorkflowStep {
+  private static class PoolWorkflowStep implements WorkflowStep {
     private final String message;
     private PoolProgressStep progressStep;
 
@@ -106,7 +106,7 @@ public class TestWorkflow extends AbstractWorkflow {
     }
   }
 
-  public static class IntegerWorkflowStep implements WorkflowStep {
+  private static class IntegerWorkflowStep implements WorkflowStep {
     private final String message;
     private IntegerProgressStep progressStep;
 
