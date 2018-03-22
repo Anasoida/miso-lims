@@ -13,6 +13,9 @@ import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.WorkflowStepPrompt;
 
 public class TestWorkflow extends AbstractWorkflow {
+  // Use null for WorkflowName since we can't create an Enum value for a test workflow
+  private static final WorkflowName WORKFLOW_NAME = null;
+
   private List<WorkflowStep> steps = Arrays.asList(new IntegerWorkflowStep("Input an integer."), new PoolWorkflowStep("Input a pool."));
   private int nextStepNumber = 0;
 
@@ -71,7 +74,7 @@ public class TestWorkflow extends AbstractWorkflow {
 
   @Override
   protected WorkflowName getWorkflowName() {
-    return null;
+    return WORKFLOW_NAME;
   }
 
   public static class PoolWorkflowStep implements WorkflowStep {
