@@ -169,6 +169,17 @@ public class TestWorkflowTest {
     assertReceivedOneInput(workflow, INT_1);
   }
 
+  @Test
+  public void testSetProgressTwiceThrowsError() {
+    workflow = new TestWorkflow();
+    workflow.setProgress(makeProgress());
+
+    exception.expect(IllegalStateException.class);
+    workflow.setProgress(makeProgress());
+
+    assertNoInput(workflow);
+  }
+
   private Workflow makeNewWorkflow() {
     Workflow workflow = new TestWorkflow();
     workflow.setProgress(makeProgress());

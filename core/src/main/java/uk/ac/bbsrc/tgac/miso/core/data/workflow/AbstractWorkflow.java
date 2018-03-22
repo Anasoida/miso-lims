@@ -19,6 +19,7 @@ public abstract class AbstractWorkflow implements Workflow {
 
   @Override
   final public void setProgress(Progress progress) {
+    if (this.progress != null) throw new IllegalStateException("Progress is already set");
     if (progress.getWorkflowName() != getWorkflowName()) throw new IllegalArgumentException("Invalid WorkflowName");
 
     processInputs(new ArrayList<>(progress.getSteps()));
