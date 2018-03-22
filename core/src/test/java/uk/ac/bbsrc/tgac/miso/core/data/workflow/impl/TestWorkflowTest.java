@@ -43,6 +43,13 @@ public class TestWorkflowTest {
     assertNoInput(makeNewWorkflow());
   }
 
+  @Test
+  public void testSetNullProgress() {
+    workflow = new TestWorkflow();
+    exception.expect(IllegalArgumentException.class);
+    workflow.setProgress(null);
+  }
+
   private void assertNoInput(Workflow workflow) {
     exception.expect(IllegalArgumentException.class);
     workflow.processInput(2, makePoolStep(POOL_ID));
