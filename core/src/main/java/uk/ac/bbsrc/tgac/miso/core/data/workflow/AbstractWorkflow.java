@@ -8,7 +8,7 @@ public abstract class AbstractWorkflow implements Workflow {
   private Progress progress;
 
   @Override
-  public Progress getProgress() {
+  final public Progress getProgress() {
     List<ProgressStep> steps = getCompletedSteps().stream().map(WorkflowStep::getProgressStep).collect(Collectors.toList());
     for (ProgressStep step : steps) {
       step.setProgress(progress);
@@ -18,7 +18,7 @@ public abstract class AbstractWorkflow implements Workflow {
   }
 
   @Override
-  public void setProgress(Progress progress) {
+  final public void setProgress(Progress progress) {
     if (progress.getWorkflowName() != getWorkflowName()) throw new IllegalArgumentException("Invalid WorkflowName");
 
     processInputs(new ArrayList<>(progress.getSteps()));
@@ -32,7 +32,7 @@ public abstract class AbstractWorkflow implements Workflow {
   }
 
   @Override
-  public List<String> getLog() {
+  final public List<String> getLog() {
     return getCompletedSteps().stream().map(WorkflowStep::getLogMessage).collect(Collectors.toList());
   }
 
