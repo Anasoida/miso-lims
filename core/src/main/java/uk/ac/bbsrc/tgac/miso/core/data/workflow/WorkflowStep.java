@@ -11,7 +11,7 @@ public interface WorkflowStep {
    * The default implementation of processInput is to throw an exception.
    * Subclasses will override this implementation for the ProgressSteps they expect
    */
-  default void processInput(SampleProgressStep step) {
+  default void processInput(ProgressStep step) {
     throwUnexpectedInput();
   }
 
