@@ -2,14 +2,13 @@ package uk.ac.bbsrc.tgac.miso.core.data.workflow;
 
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.impl.IntegerProgressStep;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.impl.PoolProgressStep;
-import uk.ac.bbsrc.tgac.miso.core.data.workflow.impl.SampleProgressStep;
 
 public interface WorkflowStep {
   WorkflowStepPrompt getPrompt();
 
   /**
-   * The default implementation of processInput is to throw an exception.
-   * Subclasses will override this implementation for the ProgressSteps they expect
+   * The default implementation of processInput is to throw an exception. Subclasses will override this implementation for the ProgressSteps
+   * they expect
    */
   default void processInput(ProgressStep step) {
     throwUnexpectedInput();
