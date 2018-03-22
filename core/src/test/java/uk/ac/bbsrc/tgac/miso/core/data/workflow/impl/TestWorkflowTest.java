@@ -64,8 +64,6 @@ public class TestWorkflowTest {
 
     exception.expect(IllegalStateException.class);
     workflow.setProgress(makeProgress());
-
-    assertNoInput(workflow);
   }
 
   @Test
@@ -73,7 +71,6 @@ public class TestWorkflowTest {
     workflow = new TestWorkflow();
     exception.expect(IllegalArgumentException.class);
     workflow.setProgress(makeProgress(LOADSEQUENCER));
-    assertNoInput(workflow);
   }
 
   @Test
