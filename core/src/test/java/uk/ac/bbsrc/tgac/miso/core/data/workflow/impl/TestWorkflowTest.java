@@ -39,13 +39,6 @@ public class TestWorkflowTest {
   private Workflow workflow;
 
   @Test
-  public void testCreateNewWorkflowWithIncorrectWorkflowName() {
-    workflow = new TestWorkflow();
-    exception.expect(IllegalArgumentException.class);
-    workflow.setProgress(makeProgress(LOADSEQUENCER));
-  }
-
-  @Test
   public void testCreateNewWorkflow() {
     assertNoInput(makeNewWorkflow());
   }
@@ -62,6 +55,25 @@ public class TestWorkflowTest {
     exception.expect(IllegalArgumentException.class);
     assertFalse(workflow.isComplete());
     assertEquals(Collections.emptyList(), workflow.getLog());
+  }
+
+  @Test
+  public void testSetProgressTwiceThrowsError() {
+    workflow = new TestWorkflow();
+    workflow.setProgress(makeProgress());
+
+    exception.expect(IllegalStateException.class);
+    workflow.setProgress(makeProgress());
+
+    assertNoInput(workflow);
+  }
+
+  @Test
+  public void testCreateNewWorkflowWithIncorrectWorkflowName() {
+    workflow = new TestWorkflow();
+    exception.expect(IllegalArgumentException.class);
+    workflow.setProgress(makeProgress(LOADSEQUENCER));
+    assertNoInput(workflow);
   }
 
   @Test
@@ -167,17 +179,6 @@ public class TestWorkflowTest {
     } catch (Exception ignored) {
     }
     assertReceivedOneInput(workflow, INT_1);
-  }
-
-  @Test
-  public void testSetProgressTwiceThrowsError() {
-    workflow = new TestWorkflow();
-    workflow.setProgress(makeProgress());
-
-    exception.expect(IllegalStateException.class);
-    workflow.setProgress(makeProgress());
-
-    assertNoInput(workflow);
   }
 
   private Workflow makeNewWorkflow() {
