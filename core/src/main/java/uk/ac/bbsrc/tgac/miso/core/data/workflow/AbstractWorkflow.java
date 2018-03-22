@@ -8,13 +8,13 @@ public abstract class AbstractWorkflow implements Workflow {
   private Progress progress;
 
   @Override
-  final public Progress getProgress() {
+  public final Progress getProgress() {
     progress.setSteps(getCompletedSteps().stream().map(WorkflowStep::getProgressStep).collect(Collectors.toList()));
     return progress;
   }
 
   @Override
-  final public void setProgress(Progress progress) {
+  public final void setProgress(Progress progress) {
     if (this.progress != null) throw new IllegalStateException("Progress is already set");
     validateProgress(progress);
 
@@ -34,7 +34,7 @@ public abstract class AbstractWorkflow implements Workflow {
   }
 
   @Override
-  final public List<String> getLog() {
+  public final List<String> getLog() {
     return getCompletedSteps().stream().map(WorkflowStep::getLogMessage).collect(Collectors.toList());
   }
 
