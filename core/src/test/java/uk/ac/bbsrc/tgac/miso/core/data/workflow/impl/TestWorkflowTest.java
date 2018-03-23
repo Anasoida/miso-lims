@@ -52,13 +52,14 @@ public class TestWorkflowTest {
     assertIntegerPrompt(workflow.getNextStep());
     assertIntegerPrompt(workflow.getStep(0));
     assertThrows(IllegalArgumentException.class, () -> workflow.getStep(1));
-    assertThrows(IllegalArgumentException.class, () -> assertFalse(workflow.isComplete()));
+    assertFalse(workflow.isComplete());
     assertEquals(Collections.emptyList(), workflow.getLog());
   }
 
   private <T extends Throwable> void assertThrows(Class<T> expectedType, Runnable runnable) {
     try {
       runnable.run();
+      throw new AssertionFailedError(String.format("Expected exception %s was not thrown", expectedType.toString()));
     } catch (Throwable actualException) {
       if (!expectedType.isInstance(actualException)) {
         throw new AssertionFailedError(String.format("Expected exception %s was not thrown", expectedType.toString()));

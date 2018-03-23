@@ -49,6 +49,6 @@ public class PoolProgressStep extends AbstractProgressStep {
 
   @Override
   public void accept(WorkflowStep visitor) {
-    visitor.processInput(this);
+    visitor.setProgressStep(this);
   }
 }

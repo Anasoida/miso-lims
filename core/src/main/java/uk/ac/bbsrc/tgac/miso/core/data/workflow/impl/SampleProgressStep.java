@@ -49,6 +49,6 @@ public class SampleProgressStep extends AbstractProgressStep {
 
   @Override
   public void accept(WorkflowStep visitor) {
-    visitor.processInput(this);
+    visitor.setProgressStep(this);
   }
 }

@@ -9,10 +9,19 @@ public interface Workflow {
 
   WorkflowStepPrompt getNextStep();
 
+  /**
+   * @param stepNumber step index
+   */
   WorkflowStepPrompt getStep(int stepNumber);
 
+  /**
+   * @return whether input has been received for all steps
+   */
   boolean isComplete();
 
+  /**
+   * @return list of log messages for each step
+   */
   List<String> getLog();
 
   /**
@@ -22,7 +31,7 @@ public interface Workflow {
 
   /**
    * Validate and store input for a step identified by the 0-indexed stepNumber.
-   * stepNumber may refer to a previous step.
+   * If stepNumber refers to a previous step, an implementation may or may not choose to invalidate future steps.
    */
   void processInput(int stepNumber, ProgressStep step);
 
