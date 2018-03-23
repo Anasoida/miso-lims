@@ -63,10 +63,13 @@ public class TestWorkflow extends AbstractWorkflow {
 
   @Override
   public void cancelInput() {
-    if (currentStepNumber() == 0) {
-      steps.get(0).setProgressStep((IntegerProgressStep) null);
-    } else if (currentStepNumber() == 1) {
-      steps.get(1).setProgressStep((PoolProgressStep) null);
+    if (currentStepNumber() >= 0) {
+      if (currentStepNumber() == 0) {
+        steps.get(0).setProgressStep((IntegerProgressStep) null);
+      } else if (currentStepNumber() == 1) {
+        steps.get(1).setProgressStep((PoolProgressStep) null);
+      }
+      nextStepNumber--;
     }
   }
 
