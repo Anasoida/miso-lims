@@ -15,10 +15,21 @@ public interface Workflow {
 
   List<String> getLog();
 
+  /**
+   * Validate and store input for the current step, which corresponds to the result of getNextStep.
+   */
   void processInput(ProgressStep step);
 
+  /**
+   * Validate and store input for a step identified by the 0-indexed stepNumber.
+   * stepNumber may refer to a previous step.
+   */
   void processInput(int stepNumber, ProgressStep step);
 
+  /**
+   * Removes the latest step and any effects it caused.
+   * Has no effect if no input has been processed.
+   */
   void cancelInput();
 
   enum WorkflowName {
