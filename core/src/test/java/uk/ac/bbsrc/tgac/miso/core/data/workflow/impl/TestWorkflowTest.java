@@ -10,12 +10,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import com.google.common.collect.Sets;
 
+import junit.framework.AssertionFailedError;
 import uk.ac.bbsrc.tgac.miso.core.data.Pool;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.PoolImpl;
 import uk.ac.bbsrc.tgac.miso.core.data.workflow.Progress;
@@ -33,9 +32,6 @@ public class TestWorkflowTest {
   // Use null for WorkflowName since we can't create an Enum value for a test workflow
   private static final WorkflowName WORKFLOW_NAME = null;
 
-  @Rule
-  public final ExpectedException exception = ExpectedException.none();
-
   private Workflow workflow;
 
   @Test
@@ -46,22 +42,28 @@ public class TestWorkflowTest {
   @Test
   public void testSetNullProgress() {
     workflow = new TestWorkflow();
-    exception.expect(IllegalArgumentException.class);
-    workflow.setProgress(null);
+    assertThrows(IllegalArgumentException.class, () -> workflow.setProgress(null));
   }
 
   private void assertNoInput(Workflow workflow) {
-    exception.expect(IllegalArgumentException.class);
-    workflow.processInput(2, makePoolStep(POOL_ID));
+    assertThrows(IllegalArgumentException.class, () -> workflow.processInput(2, makePoolStep(POOL_ID)));
 
     assertEquivalent(makeProgress(), workflow.getProgress());
     assertIntegerPrompt(workflow.getNextStep());
     assertIntegerPrompt(workflow.getStep(0));
-    exception.expect(IllegalArgumentException.class);
-    workflow.getStep(1);
-    exception.expect(IllegalArgumentException.class);
-    assertFalse(workflow.isComplete());
+    assertThrows(IllegalArgumentException.class, () -> workflow.getStep(1));
+    assertThrows(IllegalArgumentException.class, () -> assertFalse(workflow.isComplete()));
     assertEquals(Collections.emptyList(), workflow.getLog());
+  }
+
+  private <T extends Throwable> void assertThrows(Class<T> expectedType, Runnable runnable) {
+    try {
+      runnable.run();
+    } catch (Throwable actualException) {
+      if (!expectedType.isInstance(actualException)) {
+        throw new AssertionFailedError(String.format("Expected exception %s was not thrown", expectedType.toString()));
+      }
+    }
   }
 
   @Test
@@ -69,22 +71,19 @@ public class TestWorkflowTest {
     workflow = new TestWorkflow();
     workflow.setProgress(makeProgress());
 
-    exception.expect(IllegalStateException.class);
-    workflow.setProgress(makeProgress());
+    assertThrows(IllegalStateException.class, () -> workflow.setProgress(makeProgress()));
   }
 
   @Test
   public void testCreateNewWorkflowWithIncorrectWorkflowName() {
     workflow = new TestWorkflow();
-    exception.expect(IllegalArgumentException.class);
-    workflow.setProgress(makeProgress(LOADSEQUENCER));
+    assertThrows(IllegalArgumentException.class, () -> workflow.setProgress(makeProgress(LOADSEQUENCER)));
   }
 
   @Test
   public void testProcessInvalidInput() {
     workflow = makeNewWorkflow();
-    exception.expect(IllegalArgumentException.class);
-    workflow.processInput(makePoolStep(POOL_ID));
+    assertThrows(IllegalArgumentException.class, () -> workflow.processInput(makePoolStep(POOL_ID)));
   }
 
   @Test
@@ -95,17 +94,15 @@ public class TestWorkflowTest {
   }
 
   private void assertReceivedOneInput(Workflow workflow, int input) {
-    exception.expect(IllegalArgumentException.class);
-    workflow.processInput(2, makePoolStep(POOL_ID));
+    assertThrows(IllegalArgumentException.class, () -> workflow.processInput(2, makePoolStep(POOL_ID)));
 
     assertEquivalent(makeProgress(makeIntegerStep(input, 0)), workflow.getProgress());
     assertPoolPrompt(workflow.getNextStep());
     assertIntegerPrompt(workflow.getStep(0));
     assertPoolPrompt(workflow.getStep(1));
-    exception.expect(IllegalArgumentException.class);
-    workflow.getStep(2);
+    assertThrows(IllegalArgumentException.class, () -> workflow.getStep(2));
     assertFalse(workflow.isComplete());
-    assertEquals(Collections.singletonList(String.format("Processed integer %d", INT_1)), workflow.getLog());
+    assertEquals(Collections.singletonList(String.format("Processed integer %d", input)), workflow.getLog());
   }
 
   @Test
@@ -139,18 +136,15 @@ public class TestWorkflowTest {
   }
 
   private void assertReceivedTwoInputs(Workflow workflow, int input1, long input2Id) {
-    exception.expect(IllegalArgumentException.class);
-    workflow.processInput(2, makePoolStep(POOL_ID));
+    assertThrows(IllegalArgumentException.class, () -> workflow.processInput(2, makePoolStep(POOL_ID)));
 
     assertEquivalent(makeProgress(makeIntegerStep(input1, 0), makePoolStep(input2Id, 1)), workflow.getProgress());
-    exception.expect(IllegalArgumentException.class);
-    workflow.getNextStep();
+    assertThrows(IllegalArgumentException.class, workflow::getNextStep);
     assertIntegerPrompt(workflow.getStep(0));
     assertPoolPrompt(workflow.getStep(1));
-    exception.expect(IllegalArgumentException.class);
-    workflow.getStep(2);
+    assertThrows(IllegalArgumentException.class, () -> workflow.getStep(2));
     assertTrue(workflow.isComplete());
-    assertEquals(Arrays.asList(String.format("Processed integer %d", INT_1), String.format("Processed Pool with id %d", POOL_ID)),
+    assertEquals(Arrays.asList(String.format("Processed integer %d", input1), String.format("Processed Pool with id %d", input2Id)),
         workflow.getLog());
   }
 

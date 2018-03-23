@@ -54,8 +54,7 @@ public class TestWorkflow extends AbstractWorkflow {
     if (!validStepNumber(stepNumber)) throw new IllegalArgumentException("Invalid step number");
 
     step.accept(steps.get(stepNumber));
-    step.setStepNumber(nextStepNumber);
-    nextStepNumber++;
+    nextStepNumber = stepNumber + 1;
   }
 
   @Override

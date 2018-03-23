@@ -3,13 +3,16 @@ package uk.ac.bbsrc.tgac.miso.core.data.workflow;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public abstract class AbstractWorkflow implements Workflow {
   private Progress progress;
 
   @Override
   public final Progress getProgress() {
-    progress.setSteps(getCompletedSteps().stream().map(WorkflowStep::getProgressStep).collect(Collectors.toList()));
+    List<WorkflowStep> steps = getCompletedSteps();
+    IntStream.range(0, steps.size()).forEach(i -> steps.get(i).getProgressStep().setStepNumber(i));
+    progress.setSteps(steps.stream().map(WorkflowStep::getProgressStep).collect(Collectors.toList()));
     return progress;
   }
 
