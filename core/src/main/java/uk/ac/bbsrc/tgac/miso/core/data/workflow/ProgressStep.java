@@ -15,10 +15,14 @@ public interface ProgressStep extends Serializable, Comparable<ProgressStep> {
 
   void setStepNumber(int stepNumber);
 
+  /**
+   * Part of the Visitor Pattern to use WorkflowStep to validate ProgressStep
+   * All implementations of this method should call {@code visitor.processInput(this)}
+   * @param visitor WorkflowStep used to validate {@code this}
+   */
   void accept(WorkflowStep visitor);
 
   enum InputType {
     SEQUENCERPARTITIONCONTAINER, POOL, PLATFORM, INTEGER
   }
-
 }
