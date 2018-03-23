@@ -64,11 +64,7 @@ public class TestWorkflow extends AbstractWorkflow {
   @Override
   public void cancelInput() {
     if (currentStepNumber() >= 0) {
-      if (currentStepNumber() == 0) {
-        steps.get(0).setProgressStep((IntegerProgressStep) null);
-      } else if (currentStepNumber() == 1) {
-        steps.get(1).setProgressStep((PoolProgressStep) null);
-      }
+      steps.get(currentStepNumber()).cancelInput();
       nextStepNumber--;
     }
   }
@@ -111,8 +107,13 @@ public class TestWorkflow extends AbstractWorkflow {
     }
 
     @Override
-    public void setProgressStep(PoolProgressStep step) {
+    public void processInput(PoolProgressStep step) {
       this.progressStep = step;
+    }
+
+    @Override
+    public void cancelInput() {
+      this.progressStep = null;
     }
   }
 
@@ -140,8 +141,13 @@ public class TestWorkflow extends AbstractWorkflow {
     }
 
     @Override
-    public void setProgressStep(IntegerProgressStep step) {
+    public void processInput(IntegerProgressStep step) {
       this.progressStep = step;
+    }
+
+    @Override
+    public void cancelInput() {
+      this.progressStep = null;
     }
   }
 }

@@ -17,7 +17,7 @@ public interface ProgressStep extends Serializable, Comparable<ProgressStep> {
 
   /**
    * Part of the Visitor Pattern to use WorkflowStep to validate ProgressStep
-   * All implementations of this method should call {@code visitor.setProgressStep(this)}
+   * All implementations of this method should call {@code visitor.processInput(this)}
    * @param visitor WorkflowStep used to validate {@code this}
    */
   void accept(WorkflowStep visitor);
